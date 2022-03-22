@@ -1,0 +1,19 @@
+{
+  "name": "our-product",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/Haku-Louie-Ian-Simon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oslabs-beta/Haku-Louie-Ian-Simon/issues"
+  },
+  "homepage": "https://github.com/oslabs-beta/Haku-Louie-Ian-Simon#readme"
+}
