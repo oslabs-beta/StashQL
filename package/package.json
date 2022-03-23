@@ -1,0 +1,19 @@
+{
+  "name": "stashql",
+  "version": "1.0.0",
+  "description": "stashql product",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonchn160/StashQL-1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simonchn160/StashQL-1/issues"
+  },
+  "homepage": "https://github.com/simonchn160/StashQL-1#readme"
+}
