@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simonchn160/StashQL-1.git"
+    "url": "git+https://github.com/oslabs-beta/StashQL.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/simonchn160/StashQL-1/issues"
+    "url": "https://github.com/oslabs-beta/StashQL.git/issues"
   },
-  "homepage": "https://github.com/simonchn160/StashQL-1#readme"
+  "homepage": "https://github.com/oslabs-beta/StashQL.git#readme"
 }
