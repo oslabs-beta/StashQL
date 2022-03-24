@@ -2,6 +2,7 @@ const stashql = require('stashql');
 const {graphqlHTTP} = require('express-graphql')
 const express = require('express');
 const cors = require('cors');
+const redis = require('redis');
 const {
     GraphQLSchema,
     GraphQLObjectType,
@@ -12,7 +13,11 @@ const {
   } = require('graphql');
 
 const app = express();
-
+const redisCache = redis.createClient();
+redisCache.connect();
+redisCache.on('connect', () => {
+  console.log('The Redis cache is connected');
+});
 app.use(cors());
 
 app.use(express.json());
@@ -140,10 +145,10 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
-const StashQL = new stashql(schema);
+const StashQL = new stashql(schema, redisCache);
 
 app.use("/graphql", StashQL.queryHandler, (req, res) => {
-  return res.status(200).json(res.locals.data);
+  return res.status(200).json(JSON.stringify(res.locals.data));
 })
 
 // app.use('/', graphqlHTTP({
