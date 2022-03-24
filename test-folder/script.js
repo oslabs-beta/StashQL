@@ -70,36 +70,36 @@ const RootQueryType = new GraphQLObjectType({
   name: 'Query',
   description: 'Root Query',
   fields: () => ({
-    // book: {
-    //   type: BookType,
-    //   description: 'A single book',
-    //   args: {
-    //     id: { type: GraphQLInt }
-    //   },
-    //   resolve: (parent, args) => {
-    //     return booksArray.find(book => book.id === args.id)
-    //   }
-    // },
-    // books: {
-    //   type: new GraphQLList(BookType),
-    //   description: 'List of All Books',
-    //   resolve: () => booksArray
-    // },
+    book: {
+      type: BookType,
+      description: 'A single book',
+      args: {
+        id: { type: GraphQLInt }
+      },
+      resolve: (parent, args) => {
+        return booksArray.find(book => book.id === args.id)
+      }
+    },
+    books: {
+      type: new GraphQLList(BookType),
+      description: 'List of All Books',
+      resolve: () => booksArray
+    },
     authors: {
       type: new GraphQLList(AuthorType),
       description: 'List of All Authors',
       resolve: () => authorsArray
     },
-    // author: {
-    //   type: AuthorType,
-    //   description: 'A single author',
-    //   args: {
-    //     id: { type: GraphQLInt }
-    //   },
-    //   resolve: (parent, args) => {
-    //     return authorsArray.find(author => author.id === args.id)
-    //   }
-    // }
+    author: {
+      type: AuthorType,
+      description: 'A single author',
+      args: {
+        id: { type: GraphQLInt }
+      },
+      resolve: (parent, args) => {
+        return authorsArray.find(author => author.id === args.id)
+      }
+    }
   })
 })
 
@@ -141,10 +141,9 @@ const schema = new GraphQLSchema({
 })
 
 const StashQL = new stashql(schema);
-console.log('THIS IS THE SCHEMA: ', StashQL.schema);
 
 app.use("/graphql", StashQL.queryHandler, (req, res) => {
-  console.log(res.locals.data);
+  return res.status(200).json(res.locals.data);
 })
 
 // app.use('/', graphqlHTTP({
