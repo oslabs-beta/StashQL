@@ -27,33 +27,57 @@ const redis = require('redis');
 // }
 
 class stashql {
-  constructor(clientSchema) {
+  constructor(clientSchema, redisCache, life) {
     this.queryHandler = this.queryHandler.bind(this);
     this.schema = clientSchema;
     this.query = '';
+    this.cache = redisCache;
+    this.ttl = life;
   }
 
   async queryHandler(req, res, next) {
     this.query = req.body.query;
-    //checks the cache to see if it has a key that matches the query
-    redis.get(this.query, async(error, data) => {
-      //if there's any errors running this, console log the error
-      if (error) console.log(error);
-      //if there is no data returned (this means there were no keys that matched the query),
-      //then werun the query as usual and then set the query as a key in the cache and its 
-      //corresponding value to the data
-      if (data === null) {
-        const result = await graphql({schema: this.schema, source: this.query});
-        redis.set(this.query, result)
-        res.locals.data = result;
-        return next()
-      }
-      //if there was data returned (meaning there was a key that matched the query),
-      //then we just take that data and assign it to res.locals.data so the client can
-      //access it
-      res.locals.data = data;
-      return next()
-    })
+
+    // if (await this.cache.exists(this.query)) {
+    //   const data = await this.cache.get(this.query);
+    //   console.log('cache hit!');
+    //   res.locals.data = JSON.parse(data);
+    //   return next();
+    // } else {
+    //   //const result = await 
+    //   console.log('database hit!');
+    //   await graphql({schema: this.schema, source: this.query})
+    //   .then((data) => JSON.stringify(data))
+    //   .then((data) => {
+    //     this.cache.set(this.query, data);
+    //     res.locals.data = JSON.parse(data);
+    //     return next(); 
+    //   })
+    // }
+    if (await this.cache.exists(this.query)) {
+      const data = await this.cache.get(this.query);
+      console.log('cache hit!');
+      res.locals.data = JSON.parse(data);
+      return next();
+    } else {
+      //const result = await 
+      console.log('database hit!');
+      await graphql({schema: this.schema, source: this.query})
+      .then((data) => JSON.stringify(data))
+      .then((data) => {
+        this.cache.set(this.query, data);
+        this.cache.expire(this.query, this.ttl);
+        res.locals.data = JSON.parse(data);
+        return next();
+      })
+    }
+  }
+}
+
+
+module.exports = stashql;
+
+
 
     // //otherwise:
     // this.query = req.body.query;
@@ -64,8 +88,3 @@ class stashql {
     // // console.log(res.locals.data);
     // console.log('line 43 above is done running');
     // return next();
-  }
-}
-
-
-module.exports = stashql;

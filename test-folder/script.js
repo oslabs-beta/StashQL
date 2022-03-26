@@ -38,6 +38,28 @@ const booksArray = [
   { id: 6, name: 'The Return of the King', authorId: 2 },
   { id: 7, name: 'The Way of Shadows', authorId: 3 },
   { id: 8, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 9, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 10, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 11, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 12, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 13, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 14, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 15, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 16, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 17, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 18, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 19, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 20, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 21, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 22, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 23, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 24, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 25, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 26, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 27, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 28, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 29, name: 'Beyond the Shadows', authorId: 3 },
+  { id: 30, name: 'Beyond the Shadows', authorId: 3 },
 ];
 
 const AuthorType = new GraphQLObjectType({
@@ -145,10 +167,10 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
-const StashQL = new stashql(schema, redisCache);
+const StashQL = new stashql(schema, redisCache, 30);
 
 app.use("/graphql", StashQL.queryHandler, (req, res) => {
-  return res.status(200).json(JSON.stringify(res.locals.data));
+  return res.status(200).json(res.locals.data);
 })
 
 // app.use('/', graphqlHTTP({
