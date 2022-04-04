@@ -1,6 +1,6 @@
 {
   "name": "stashql",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "stashql product",
   "main": "index.js",
   "scripts": {
