@@ -7,6 +7,7 @@ class stashql {
     this.queryHandler = this.queryHandler.bind(this);
     this.refillCacheHandler = this.refillCacheHandler.bind(this);
     this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
+    this.clearCacheHandler = this.clearCacheHandler.bind(this);
     this.schema = clientSchema;
     this.query = '';
     this.cache = redisCache;
@@ -181,6 +182,17 @@ class stashql {
       if (currQueryField === field) {
         await this.cache.del(queryKey);
       }
+    }
+  }
+
+  //clears all keys from the cache
+  async clearCacheHandler(req, res, next) {
+    try {
+      await this.cache.flushAll();
+      return next();
+    } catch (error) {
+      console.log('error in clearCacheHandler: ', error);
+      return next();
     }
   }
 
