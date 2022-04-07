@@ -2,6 +2,7 @@ const { graphql } = require('graphql');
 const fs = require('fs');
 const path = require('path');
 
+//Merging demo with StashQL
 class stashql {
   constructor(clientSchema, redisCache, life) {
     this.queryHandler = this.queryHandler.bind(this);
