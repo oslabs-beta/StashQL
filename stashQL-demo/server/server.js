@@ -1,32 +1,60 @@
-const path = require('path');
 const express = require('express');
+const path = require('path');
+const stashql = require('stashql');
 const cors = require('cors');
-const dbController = require('./controllers/dbController');
+const redis = require('redis');
+const schema = require('./schema');
+const subscribeController = require('./controllers/subscribeController');
+
 
 const app = express();
-const PORT = 3000;
+
+const redisCache = redis.createClient();
+redisCache.connect();
+redisCache.on('connect', () => {
+  console.log('The Redis cache is connected');
+});
 app.use(cors());
 
-// app.use(express.static(path.resolve(__dirname, '../dist')));
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.get('/', dbController.getRows, (req, res) => res.status(200).json(res.locals.authors));
+app.use(express.json());
 
-app.use(express.static(path.resolve(__dirname, '../dist')));
+const StashQL = new stashql(schema, redisCache);
 
-app.use(express.static('client'));
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../src/index.html'));
-// })
 
-app.listen(PORT, () => {
-  console.log(`Server Listening on http://localhost:${PORT}`);
+if (process.env.NODE_ENV === 'production') {
+
+  app.use('/build', express.static(path.join(__dirname, '../build')));
+
+
+  app.get('/', (req, res) => {
+     return res.status(200).sendFile(path.join(__dirname, '../src/index.html'));
+  });
+}
+
+app.post('/api/subscribe', subscribeController.subscribe, (req, res) => {
+  return res.status(200).json(res.locals.data);
 });
 
-// npm install stashql
-// create query/mutation types and define author and book types
-// create a schema
-// create a redis cache
-// create new instance of stashql , takes in schema and redis cache
-// set up graphql endpoint
-// middleware func = stashql.queryhandler
+// app.use("/api/graphql", StashQL.queryHandler, (req, res) => {
+//   return res.status(200).json(res.locals.data);
+// })
+
+app.use("/api/graphql", StashQL.queryHandler, (req, res) => {
+  return res.status(200).json({data: res.locals.data, runTime: res.locals.runTime});
+})
+
+app.use('*', (req,res) => {
+    res.status(404).send('Not Found');
+});
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).send('Internal Server Error');
+});
+
+app.listen(3000, () => {
+    console.log('Server listening on port: 3000');
+});
+
+module.exports = app;

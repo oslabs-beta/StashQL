@@ -1,45 +1,46 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
-  entry: './src/index.jsx',
+  entry: ["regenerator-runtime/runtime.js", "./client/index.js"],
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'build')
   },
-  mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+  mode: process.env.NODE_ENV,
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.jsx?/,
         exclude: /node_modules/,
-        loader: require.resolve('babel-loader'),
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/env', '@babel/react']
+        }
       },
       {
-        test: /\.s?[ac]ss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
-        test: /\.png|svg|jpg|gif$/,
+        test: /\.png|jpg|gif$/,
         use: ['file-loader'],
       },
-    ],
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
-    }),
+      template: './client/views/index.html'
+    })
   ],
-  resolve: {
-    extensions: ['*', '.js', '.jsx'],
-  },
   devServer: {
     static: {
-      directory: path.resolve(__dirname, 'dist'),
+      publicPath: 'build',
+      directory: path.resolve(__dirname, 'build')
     },
     proxy: {
-      '/api': 'http://localhost:3000',
+      '/api': 'http://localhost:3000'
     },
-  },
-
+  }
 };
