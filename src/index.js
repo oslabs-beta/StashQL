@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { Request: New_Request, Response: New_Response, NextFunction } = require('express');
-const { graphql } = require('graphql');
-const fs = require('fs');
-const path = require('path');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const { Request: New_Request, Response: New_Response, NextFunction, } = require("express");
+const graphql_1 = require("graphql");
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 class stashql {
     constructor(clientSchema, redisCache, life) {
         this.queryHandler = this.queryHandler.bind(this);
@@ -19,7 +23,7 @@ class stashql {
         this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
         this.clearCacheHandler = this.clearCacheHandler.bind(this);
         this.schema = clientSchema;
-        this.query = '';
+        this.query = "";
         this.cache = redisCache;
         this.ttl = life;
         this.startTime = 0;
@@ -27,34 +31,44 @@ class stashql {
     }
     queryHandler(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!fs.existsSync(path.join(process.cwd(), "logs"))) {
-                fs.mkdirSync(path.join(process.cwd(), "logs"), (err) => {
-                    if (err) {
-                        console.log('Error, could not make logs directory: ', err);
-                        return next();
-                    }
-                });
+            if (!fs_1.default.existsSync(path_1.default.join(process.cwd(), "logs"))) {
+                try {
+                    fs_1.default.mkdirSync(path_1.default.join(process.cwd(), "logs"));
+                }
+                catch (error) {
+                    console.log("Error in running query: ", error);
+                    return next(error);
+                }
             }
             this.startTime = performance.now();
             this.query = req.body.query;
             const query = req.body.query;
-            if (query.slice(0, 8) !== 'mutation') {
+            if (query.slice(0, 8) !== "mutation") {
                 try {
                     if (yield this.cache.exists(this.query)) {
-                        console.log('cache hit!');
+                        console.log("cache hit!");
                         const data = yield this.cache.get(this.query);
                         res.locals.data = JSON.parse(data);
                         this.endTime = performance.now();
                         res.locals.runTime = this.endTime - this.startTime;
-                        console.log('performance: ', this.endTime - this.startTime);
-                        fs.appendFileSync(path.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({ type: "cache", query: this.query, data: JSON.parse(data), performance: this.endTime - this.startTime })}}\n`, (err) => { if (err) {
-                            console.error(err);
-                        } });
+                        console.log("performance: ", this.endTime - this.startTime);
+                        try {
+                            fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
+                                type: "cache",
+                                query: this.query,
+                                data: JSON.parse(data),
+                                performance: this.endTime - this.startTime,
+                            })}}\n`);
+                        }
+                        catch (error) {
+                            console.log("Error in running query: ", error);
+                            return next(error);
+                        }
                         return next();
                     }
                     else {
-                        console.log('database hit!');
-                        yield graphql({ schema: this.schema, source: this.query })
+                        console.log("database hit!");
+                        yield (0, graphql_1.graphql)({ schema: this.schema, source: this.query })
                             .then((data) => JSON.stringify(data))
                             .then((data) => {
                             this.cache.set(this.query, data);
@@ -64,40 +78,49 @@ class stashql {
                             res.locals.data = JSON.parse(data);
                             this.endTime = performance.now();
                             res.locals.runTime = this.endTime - this.startTime;
-                            console.log('performance: ', this.endTime - this.startTime);
-                            fs.appendFileSync(path.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({ type: "query", query: this.query, data: JSON.parse(data), performance: this.endTime - this.startTime })}\n`, (err) => { if (err) {
-                                console.error(err);
-                            } });
+                            console.log("performance: ", this.endTime - this.startTime);
+                            try {
+                                fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
+                                    type: "query",
+                                    query: this.query,
+                                    data: JSON.parse(data),
+                                    performance: this.endTime - this.startTime,
+                                })}\n`);
+                            }
+                            catch (error) {
+                                console.log(error);
+                                return next(error);
+                            }
                             return next();
                         })
                             .catch((error) => {
-                            console.log('Error in else block of queryHandler for mutations: ', error);
+                            console.log("Error in else block of queryHandler for mutations: ", error);
                         });
                     }
                 }
                 catch (error) {
-                    console.log('Error in running query: ', error);
+                    console.log("Error in running query: ", error);
                     return next(error);
                 }
             }
-            else if (query.slice(0, 8) === 'mutation') {
+            else if (query.slice(0, 8) === "mutation") {
                 try {
-                    const data = JSON.stringify(yield graphql({ schema: this.schema, source: this.query }));
-                    if (query.includes('refillCache')) {
-                        const startingIdx = query.indexOf('refillCache');
-                        const parenIdx = query.indexOf(')', startingIdx);
+                    const data = JSON.stringify(yield (0, graphql_1.graphql)({ schema: this.schema, source: this.query }));
+                    if (query.includes("refillCache")) {
+                        const startingIdx = query.indexOf("refillCache");
+                        const parenIdx = query.indexOf(")", startingIdx);
                         const therefillCacheArg = query.slice(startingIdx, parenIdx - 1);
-                        const colonIdx = therefillCacheArg.indexOf(':');
+                        const colonIdx = therefillCacheArg.indexOf(":");
                         const theField = therefillCacheArg.slice(colonIdx + 1);
                         const quoteIdx = theField.indexOf('"');
                         const theRealField = theField.slice(quoteIdx + 1);
                         yield this.refillCacheHandler(theRealField);
                     }
-                    else if (query.includes('clearRelatedFields')) {
-                        const startingIdx = query.indexOf('clearRelatedField');
-                        const parenIdx = query.indexOf(')', startingIdx);
+                    else if (query.includes("clearRelatedFields")) {
+                        const startingIdx = query.indexOf("clearRelatedField");
+                        const parenIdx = query.indexOf(")", startingIdx);
                         const theClearRelatedFieldsArg = query.slice(startingIdx, parenIdx - 1);
-                        const colonIdx = theClearRelatedFieldsArg.indexOf(':');
+                        const colonIdx = theClearRelatedFieldsArg.indexOf(":");
                         const theField = theClearRelatedFieldsArg.slice(colonIdx + 1);
                         const quoteIdx = theField.indexOf('"');
                         const theRealField = theField.slice(quoteIdx + 1);
@@ -106,14 +129,23 @@ class stashql {
                     res.locals.data = JSON.parse(data);
                     this.endTime = performance.now();
                     res.locals.runTime = this.endTime - this.startTime;
-                    console.log('performance: ', this.endTime - this.startTime);
-                    fs.appendFileSync(path.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({ type: "mutation", mutation: this.query, data: JSON.parse(data), performance: this.endTime - this.startTime })}}\n`, (err) => { if (err) {
-                        console.error(err);
-                    } });
+                    console.log("performance: ", this.endTime - this.startTime);
+                    try {
+                        fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
+                            type: "mutation",
+                            mutation: this.query,
+                            data: JSON.parse(data),
+                            performance: this.endTime - this.startTime,
+                        })}}\n`);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return error;
+                    }
                     return next();
                 }
                 catch (error) {
-                    console.log('Error in running mutation: ', error);
+                    console.log("Error in running mutation: ", error);
                     return next();
                 }
             }
@@ -121,12 +153,12 @@ class stashql {
     }
     refillCacheHandler(field) {
         return __awaiter(this, void 0, void 0, function* () {
-            const queryKeys = yield this.cache.keys('*');
+            const queryKeys = yield this.cache.keys("*");
             for (let queryKey of queryKeys) {
-                const secondCurly = queryKey.indexOf('{', 1);
+                const secondCurly = queryKey.indexOf("{", 1);
                 const currQueryField = queryKey.slice(1, secondCurly).trim();
                 if (currQueryField === field) {
-                    yield graphql({ schema: this.schema, source: queryKey })
+                    yield (0, graphql_1.graphql)({ schema: this.schema, source: queryKey })
                         .then((data) => JSON.stringify(data))
                         .then((data) => {
                         this.cache.set(queryKey, data);
@@ -135,7 +167,7 @@ class stashql {
                         }
                     })
                         .catch((error) => {
-                        console.log('error in refillCacheHandler: ', error);
+                        console.log("error in refillCacheHandler: ", error);
                     });
                 }
             }
@@ -143,9 +175,9 @@ class stashql {
     }
     clearRelatedFieldsHandler(field) {
         return __awaiter(this, void 0, void 0, function* () {
-            const queryKeys = yield this.cache.keys('*');
+            const queryKeys = yield this.cache.keys("*");
             for (let queryKey of queryKeys) {
-                const secondCurly = queryKey.indexOf('{', 1);
+                const secondCurly = queryKey.indexOf("{", 1);
                 const currQueryField = queryKey.slice(1, secondCurly).trim();
                 if (currQueryField === field) {
                     yield this.cache.del(queryKey);
@@ -160,7 +192,7 @@ class stashql {
                 return next();
             }
             catch (error) {
-                console.log('error in clearCacheHandler: ', error);
+                console.log("error in clearCacheHandler: ", error);
                 return next();
             }
         });
