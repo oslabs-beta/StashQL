@@ -3,20 +3,29 @@ const {
   Response: New_Response,
   NextFunction,
 } = require("express");
-import { WriteFileOptions, MakeDirectoryOptions } from "fs";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema} from "graphql";
+import { RedisClientType} from "redis";
 import fs from "fs";
 import path from "path";
+// const {
+//   GraphQLSchema,
+//   GraphQLObjectType,
+//   GraphQLString,
+//   GraphQLList,
+//   GraphQLInt,
+//   GraphQLNonNull,
+// } = require("graphql");
+
 
 class stashql {
   query: string;
   startTime: number;
   endTime: number;
-  schema: any;
-  cache: any;
+  schema: GraphQLSchema;
+  cache: RedisClientType;
   ttl: number;
 
-  constructor(clientSchema: any, redisCache: any, life: any) {
+  constructor(clientSchema: GraphQLSchema, redisCache: RedisClientType, life: number) {
     this.queryHandler = this.queryHandler.bind(this);
     this.refillCacheHandler = this.refillCacheHandler.bind(this);
     this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
@@ -45,7 +54,7 @@ class stashql {
     }
     this.startTime = performance.now();
     this.query = req.body.query;
-    const query = req.body.query;
+    const query : string = req.body.query;
     // if (query.slice(0, 8) === 'mutation') console.log('is a mutation');
 
     //if the client did not submit a mutation (just a normal query)
@@ -55,7 +64,7 @@ class stashql {
         if (await this.cache.exists(this.query)) {
           console.log("cache hit!");
           //we get the corresponding data and send it back
-          const data = await this.cache.get(this.query);
+          const data : string = await this.cache.get(this.query);
           res.locals.data = JSON.parse(data);
           this.endTime = performance.now();
           res.locals.runTime = this.endTime - this.startTime;
