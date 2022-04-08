@@ -4,17 +4,10 @@ const {
   NextFunction,
 } = require("express");
 import { WriteFileOptions, MakeDirectoryOptions } from "fs";
-// import { Request: New_Request, Response: New_Response, NextFunction} from "express";
-// const { graphql } = require('graphql');
 import { graphql } from "graphql";
-// const fs = require('fs');
 import fs from "fs";
-// const path = require('path');
 import path from "path";
 
-// interface fileSync {
-//   (path: PathLike, options?: Mode | MakeDirectoryOptions | null): string | undefined);
-// }
 class stashql {
   query: string;
   startTime: number;
@@ -51,8 +44,6 @@ class stashql {
       }
     }
     this.startTime = performance.now();
-    // console.log('request:');
-    // console.log(req.body.query);
     this.query = req.body.query;
     const query = req.body.query;
     // if (query.slice(0, 8) === 'mutation') console.log('is a mutation');
@@ -200,13 +191,10 @@ class stashql {
 
   //updating/deleting - updates all queries whose fields matches the field passed in
   async refillCacheHandler(field: any) {
-    // console.log('refillCacheHandler invoked');
-    // console.log('the field: ', field);
     //we get all the keys and assign it to queryKeys (it is an array of keys)
     const queryKeys = await this.cache.keys("*");
     //iterate through the array of query keys
     for (let queryKey of queryKeys) {
-      // console.log('current queryKey in refillCacheHandler: ', queryKey);
       const secondCurly = queryKey.indexOf("{", 1);
       const currQueryField = queryKey.slice(1, secondCurly).trim();
       //for each query key, we check to see if the field in that query matches the field passed in
