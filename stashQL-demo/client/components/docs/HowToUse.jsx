@@ -11,7 +11,7 @@ const HowToUse = () => {
         <h1>How to use</h1>
       </div>
       <div className="text-box">
-        <p>
+        <p style={{width: "75%"}}>
           The <b>stashql()</b> method is used to create a StashQL class that will require the user to pass their GraphQL schema and Redis Cache, and an optional third parameter for cache time to live.
         </p>
         <p><b>Syntax:</b></p>
@@ -34,14 +34,14 @@ const HowToUse = () => {
       </div>
       <TextArea2/>
       <div className="text-box">
-          <p>
+          <p  style={{width: "75%"}}>
               When sending any query to ‘/graphql’ use queryHander method is used to create a StashQL class that will require the user to pass their GraphQL schema and Redis Cache, and an optional third parameter for cache time to live.
           </p>
       </div>
       <TextArea3/>
-      <div className="text-box">
-        <p>When using StashQL, you must also add additional argumnet to your GraphQL <b>mutations</b> with either <b>refillCache</b> or <b>clearRelatedFields</b></p>
-        <h4>When to use refillCache and clearRelatedFields</h4>
+      <div id="text-box">
+        <p >When using StashQL, you must also add additional argumnet to your GraphQL <b>mutations</b> with either <b>refillCache</b> or <b>clearRelatedFields</b></p>
+        <h4>When to use refillCache and clearRelatedFields: </h4>
         <ul>
           <li>
             <p>
@@ -71,6 +71,8 @@ const HowToUse = () => {
         <b>Example:</b>
       </div>
       <TextArea4/>
+      <br></br>
+      <br></br>
     </div>
     
   );

@@ -39,7 +39,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar style={{ position: 'static', borderBottom: '0.25px solid black', background: 'white', boxShadow: 'none'}} position="static">
+    <AppBar style={{ position: 'fixed', borderBottom: '0.25px solid black', background: 'white', boxShadow: 'none'}} position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
       

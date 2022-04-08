@@ -9,14 +9,20 @@ const Installation = () => {
         <div className="text-box">
           <p>You can install StashQL as a dependency</p>
         </div>
-        <div id="doc-code-block">
-          <span style={{color:"#ffc91e"}} >npm </span><span style={{color:"#ffffff"}} >install stashql</span>
-        </div>
-        <button id="installBtn" onClick={() => {
-            navigator.clipboard.writeText('npm install stashql');
-            var win = window.open("", "Title", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=780, height=200, top="+(screen.height-400)+", left="+(screen.width-840));
-            win.document.body.innerText = "Text";
-          }}>Copy</button>
+        <div id="installation-code-and-btn-box">
+          <div id="doc-code-block">
+          <span>npm install stashql</span>
+          </div>
+          <button id="installBtn" onClick={() => {
+              navigator.clipboard.writeText('npm install stashql');
+              document.getElementById("installBtn").innerText = "Copied!";
+              document.getElementById("installBtn").style.backgroundColor = "#FC5CAC";
+              setTimeout(()=>{
+                document.getElementById("installBtn").innerText = "Copy";
+                document.getElementById("installBtn").style.backgroundColor = "#9A51F7";
+              }, 1000)
+            }}>Copy</button>
+        </div> 
       </div>
     );
 };

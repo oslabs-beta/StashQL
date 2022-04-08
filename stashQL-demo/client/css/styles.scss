@@ -325,26 +325,57 @@ html, body {
 }
   
 /*=========================DOC CSS=========================*/
+#DocsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 #doc-box{
     display: flex;
     max-width: 1400px;
     flex-direction: column;
     margin-left: 8%;
     margin-right: 8%;
-    padding-top: 50px;
+    padding-top: 100px;
 }
 
 #doc-code-block{
+    flex-wrap: wrap;
     font-family: Consolas,monaco,monospace; 
     font-size: 1em;
     color: rgb(255, 255, 255);
     background-color: #24242c;
     border-radius: 5px;
-    resize: none;
-    width: 75%;
+    padding: 5px;
 }
 #doc-code-block span{
     font-family: Consolas,monaco,monospace;
+}
+#installBtn{
+    height: 35px;
+    // width:30px;
+    font-size: 17px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    background-color: #9A51F7;
+    color: #fff;
+    cursor:pointer;
+}
+
+#doc-installation-code-and-btn-box{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 10px;
+}
+#text-box{
+    font-size: 17px;
+    line-height: 2;
 }
 /*=========================TEAM CSS=========================*/
 #meet-the-team-div{

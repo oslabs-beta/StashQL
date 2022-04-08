@@ -4,11 +4,12 @@ const TextArea2 = () => {
   return (
     <div id="textarea-box">
       <div id="doc-code-block">
-        <span style={{color:"#ce70cc"}}>const </span>
-        <span style={{color:"#ffc91e"}}>StashQL </span>
-        <span style={{color:"#56b6c2"}}>= </span>
-        <span style={{color:"#ce70cc"}}>new </span>
-        <span style={{color:"#ffc91e"}}>stashql(schema, redisCache, 1000)</span>;
+        <span>const </span>
+        <span style={{color:"#ba55de"}}>StashQL </span>
+        <span>= </span>
+        <span>new </span>
+        <span style={{color:"#FC5CAC"}}>stashql</span>
+        <span>&#40; stashqlSchema, redisCache, 1000 &#41;</span>  
       </div>
     </div>
   );
