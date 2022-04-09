@@ -28,6 +28,8 @@ class stashql {
         this.startTime = 0;
         this.endTime = 0;
     }
+    static sum(x, y) { return x + y; }
+    ;
     queryHandler(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!fs_1.default.existsSync(path_1.default.join(process.cwd(), "logs"))) {

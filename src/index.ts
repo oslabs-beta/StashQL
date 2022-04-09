@@ -16,7 +16,9 @@ class stashql {
     clientSchema: GraphQLSchema,
     redisCache: RedisClientType,
     life: number
+  
   ) {
+    
     this.queryHandler = this.queryHandler.bind(this);
     this.refillCacheHandler = this.refillCacheHandler.bind(this);
     this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
@@ -28,6 +30,7 @@ class stashql {
     this.startTime = 0;
     this.endTime = 0;
   }
+  static sum (x: number,y: number) {return x + y};
 
   async queryHandler(
     req: express.Request,
@@ -245,6 +248,7 @@ class stashql {
       return next();
     }
   }
+
 }
 
 module.exports = stashql;
