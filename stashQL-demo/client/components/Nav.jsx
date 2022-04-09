@@ -1,4 +1,3 @@
-// import * as React from 'react';
 import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -15,9 +14,12 @@ import MenuItem from '@mui/material/MenuItem';
 import {Link} from 'react-router-dom';
 import logo from '../images/logo1.png';
 import {FaBars} from 'react-icons/fa';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaNpm } from "react-icons/fa";
 
-
-const pages = ['Home', 'Docs', 'Demo'];
+const pages = ['Home', 'Docs', 'Demo', 'Team'];
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -39,41 +41,12 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar style={{ position: 'static', borderBottom: '0.25px solid black', background: 'white', boxShadow: 'none'}} position="static">
+
+    <AppBar style={{ position: 'static', background: '#fefaf6', boxShadow: 'none'}} position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-      
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={logo} style={{width: '125px'}} />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end', color:'#9A51F7' }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, color:'#9A51F7' }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -114,7 +87,7 @@ const Navbar = () => {
             </Menu>
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end' }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }}}>
             {pages.map((page) => (
               <Button
                 key={page}
@@ -127,6 +100,18 @@ const Navbar = () => {
               </Button>
             ))}
           </Box>
+
+          <Box sx={{ flexGrow: 1.5, display: { xs: 'none', md: 'flex' }}}>
+            <Avatar alt="Remy Sharp" src={logo} style={{width: '125px'}} />
+          </Box>
+
+          <Box display={'flex'} style={{alignItems: 'center', gap: '10px'}}> 
+            <TwitterIcon style={{color: 'black'}}/>
+            <LinkedInIcon style={{color: 'black'}}/>
+            <FaNpm style={{color: '#CC3534', fontSize: '35px'}}/>
+            {/* <FontAwesomeIcon style={{color: 'black'}} icon={fanpm}></FontAwesomeIcon> */}
+          </Box>
+
         </Toolbar>
       </Container>
     </AppBar>
