@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const { Request: New_Request, Response: New_Response, NextFunction, } = require("express");
 const graphql_1 = require("graphql");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
@@ -36,7 +35,7 @@ class stashql {
                     fs_1.default.mkdirSync(path_1.default.join(process.cwd(), "logs"));
                 }
                 catch (error) {
-                    console.log("Error in running query: ", error);
+                    console.error("Error in running query: ", error);
                     return next(error);
                 }
             }
@@ -47,7 +46,7 @@ class stashql {
                 try {
                     if (yield this.cache.exists(this.query)) {
                         console.log("cache hit!");
-                        const data = yield this.cache.get(this.query);
+                        const data = (yield this.cache.get(this.query)) || "";
                         res.locals.data = JSON.parse(data);
                         this.endTime = performance.now();
                         res.locals.runTime = this.endTime - this.startTime;
@@ -61,7 +60,7 @@ class stashql {
                             })}}\n`);
                         }
                         catch (error) {
-                            console.log("Error in running query: ", error);
+                            console.error("Error in running query: ", error);
                             return next(error);
                         }
                         return next();
@@ -167,7 +166,7 @@ class stashql {
                         }
                     })
                         .catch((error) => {
-                        console.log("error in refillCacheHandler: ", error);
+                        console.error("error in refillCacheHandler: ", error);
                     });
                 }
             }
@@ -192,7 +191,7 @@ class stashql {
                 return next();
             }
             catch (error) {
-                console.log("error in clearCacheHandler: ", error);
+                console.error("error in clearCacheHandler: ", error);
                 return next();
             }
         });

@@ -1,21 +1,8 @@
-const {
-  Request: New_Request,
-  Response: New_Response,
-  NextFunction,
-} = require("express");
-import { graphql, GraphQLSchema} from "graphql";
-import { RedisClientType} from "redis";
+import * as express from "express";
+import { ExecutionResult, graphql, GraphQLSchema } from "graphql";
+import { RedisClientType } from "redis";
 import fs from "fs";
 import path from "path";
-// const {
-//   GraphQLSchema,
-//   GraphQLObjectType,
-//   GraphQLString,
-//   GraphQLList,
-//   GraphQLInt,
-//   GraphQLNonNull,
-// } = require("graphql");
-
 
 class stashql {
   query: string;
@@ -25,7 +12,11 @@ class stashql {
   cache: RedisClientType;
   ttl: number;
 
-  constructor(clientSchema: GraphQLSchema, redisCache: RedisClientType, life: number) {
+  constructor(
+    clientSchema: GraphQLSchema,
+    redisCache: RedisClientType,
+    life: number
+  ) {
     this.queryHandler = this.queryHandler.bind(this);
     this.refillCacheHandler = this.refillCacheHandler.bind(this);
     this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
@@ -39,23 +30,21 @@ class stashql {
   }
 
   async queryHandler(
-    req: typeof New_Request,
-    res: typeof New_Response,
-    next: typeof NextFunction
-  ) {
-    // console.log("cwd: ", process.cwd()); // -> "/Users/Simon/dirname-example/StashQL package
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): Promise<any> {
     if (!fs.existsSync(path.join(process.cwd(), "logs"))) {
       try {
         fs.mkdirSync(path.join(process.cwd(), "logs"));
       } catch (error: any) {
-        console.log("Error in running query: ", error);
+        console.error("Error in running query: ", error);
         return next(error);
       }
     }
     this.startTime = performance.now();
     this.query = req.body.query;
-    const query : string = req.body.query;
-    // if (query.slice(0, 8) === 'mutation') console.log('is a mutation');
+    const query: string = req.body.query;
 
     //if the client did not submit a mutation (just a normal query)
     if (query.slice(0, 8) !== "mutation") {
@@ -64,7 +53,7 @@ class stashql {
         if (await this.cache.exists(this.query)) {
           console.log("cache hit!");
           //we get the corresponding data and send it back
-          const data : string = await this.cache.get(this.query);
+          const data: string = await this.cache.get(this.query) || "";
           res.locals.data = JSON.parse(data);
           this.endTime = performance.now();
           res.locals.runTime = this.endTime - this.startTime;
@@ -80,7 +69,7 @@ class stashql {
               })}}\n`
             );
           } catch (error: any) {
-            console.log("Error in running query: ", error);
+            console.error("Error in running query: ", error);
             return next(error);
           }
           return next();
@@ -89,8 +78,8 @@ class stashql {
           console.log("database hit!");
           //we run the query
           await graphql({ schema: this.schema, source: this.query })
-            .then((data: any) => JSON.stringify(data))
-            .then((data: any) => {
+            .then((data: ExecutionResult<any>) => JSON.stringify(data))
+            .then((data: string) => {
               //then we set the query as a key in our cache and its value as the data we get back from running the query
               this.cache.set(this.query, data);
               //we also have it expire at a certain time
@@ -144,26 +133,29 @@ class stashql {
         //that matches the field the client passed in and update their corresponding values (data) in the cache
         if (query.includes("refillCache")) {
           //this is to check what the field passed in was
-          const startingIdx = query.indexOf("refillCache");
-          const parenIdx = query.indexOf(")", startingIdx);
-          const therefillCacheArg = query.slice(startingIdx, parenIdx - 1);
-          const colonIdx = therefillCacheArg.indexOf(":");
-          const theField = therefillCacheArg.slice(colonIdx + 1);
-          const quoteIdx = theField.indexOf('"');
-          const theRealField = theField.slice(quoteIdx + 1);
-          //we then call refillCacheHandler and pass in the field
-          await this.refillCacheHandler(theRealField);
-        } else if (query.includes("clearRelatedFields")) {
-          const startingIdx = query.indexOf("clearRelatedField");
-          const parenIdx = query.indexOf(")", startingIdx);
-          const theClearRelatedFieldsArg = query.slice(
+          const startingIdx: number = query.indexOf("refillCache");
+          const parenIdx: number = query.indexOf(")", startingIdx);
+          const therefillCacheArg: string = query.slice(
             startingIdx,
             parenIdx - 1
           );
-          const colonIdx = theClearRelatedFieldsArg.indexOf(":");
-          const theField = theClearRelatedFieldsArg.slice(colonIdx + 1);
-          const quoteIdx = theField.indexOf('"');
-          const theRealField = theField.slice(quoteIdx + 1);
+          const colonIdx: number = therefillCacheArg.indexOf(":");
+          const theField: string = therefillCacheArg.slice(colonIdx + 1);
+          const quoteIdx: number = theField.indexOf('"');
+          const theRealField: string = theField.slice(quoteIdx + 1);
+          //we then call refillCacheHandler and pass in the field
+          await this.refillCacheHandler(theRealField);
+        } else if (query.includes("clearRelatedFields")) {
+          const startingIdx: number = query.indexOf("clearRelatedField");
+          const parenIdx: number = query.indexOf(")", startingIdx);
+          const theClearRelatedFieldsArg: string = query.slice(
+            startingIdx,
+            parenIdx - 1
+          );
+          const colonIdx: number = theClearRelatedFieldsArg.indexOf(":");
+          const theField: string = theClearRelatedFieldsArg.slice(colonIdx + 1);
+          const quoteIdx: number = theField.indexOf('"');
+          const theRealField: string = theField.slice(quoteIdx + 1);
           await this.clearRelatedFieldsHandler(theRealField);
         }
         res.locals.data = JSON.parse(data);
@@ -180,12 +172,12 @@ class stashql {
               performance: this.endTime - this.startTime,
             })}}\n`
           );
-        } catch (error) {
+        } catch (error: any) {
           console.log(error);
           return error;
         }
         return next();
-      } catch (error: any | undefined) {
+      } catch (error: any) {
         console.log("Error in running mutation: ", error);
         return next();
       }
@@ -199,19 +191,19 @@ class stashql {
   // in order to avoid making a ton of network requests and possibly causing your database to fail
 
   //updating/deleting - updates all queries whose fields matches the field passed in
-  async refillCacheHandler(field: any) {
+  async refillCacheHandler(field: string) {
     //we get all the keys and assign it to queryKeys (it is an array of keys)
-    const queryKeys = await this.cache.keys("*");
+    const queryKeys: string[] = await this.cache.keys("*");
     //iterate through the array of query keys
     for (let queryKey of queryKeys) {
-      const secondCurly = queryKey.indexOf("{", 1);
-      const currQueryField = queryKey.slice(1, secondCurly).trim();
+      const secondCurly: number = queryKey.indexOf("{", 1);
+      const currQueryField: string = queryKey.slice(1, secondCurly).trim();
       //for each query key, we check to see if the field in that query matches the field passed in
       //if so, that means we want to re-run that query, therefore updating its value in the cache
       if (currQueryField === field) {
         await graphql({ schema: this.schema, source: queryKey })
-          .then((data: any) => JSON.stringify(data))
-          .then((data: any) => {
+          .then((data: ExecutionResult<any>) => JSON.stringify(data))
+          .then((data: string) => {
             // console.log(data);
             this.cache.set(queryKey, data);
             if (this.ttl !== undefined) {
@@ -219,7 +211,7 @@ class stashql {
             }
           })
           .catch((error: any) => {
-            console.log("error in refillCacheHandler: ", error);
+            console.error("error in refillCacheHandler: ", error);
           });
       }
     }
@@ -227,12 +219,12 @@ class stashql {
 
   // if you know that your cache will have a ton of queries that matches the field, you can run this function. It will clear your cache so that the next time
   // you run a query, it will simply re-run ONLY that query, NOT ALL queries that matches the field.
-  async clearRelatedFieldsHandler(field: any) {
-    const queryKeys = await this.cache.keys("*");
+  async clearRelatedFieldsHandler(field: string) {
+    const queryKeys: string[] = await this.cache.keys("*");
 
     for (let queryKey of queryKeys) {
-      const secondCurly = queryKey.indexOf("{", 1);
-      const currQueryField = queryKey.slice(1, secondCurly).trim();
+      const secondCurly: number = queryKey.indexOf("{", 1);
+      const currQueryField: string = queryKey.slice(1, secondCurly).trim();
       if (currQueryField === field) {
         await this.cache.del(queryKey);
       }
@@ -241,15 +233,15 @@ class stashql {
 
   //clears all keys from the cache
   async clearCacheHandler(
-    req: typeof New_Request,
-    res: typeof New_Response,
-    next: typeof NextFunction
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
   ) {
     try {
       await this.cache.flushAll();
       return next();
     } catch (error) {
-      console.log("error in clearCacheHandler: ", error);
+      console.error("error in clearCacheHandler: ", error);
       return next();
     }
   }
