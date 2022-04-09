@@ -62,24 +62,31 @@ class Home extends React.Component {
       <div id="main-container">
         <Navbar />
         <div id='blocks'>
-          <SectionOne/>
-          <br></br><br></br>
-          <SectionTwo/>
-          <SectionThree/>
-          <br></br><br></br>
-          <SectionFour/>
-          <br></br><br></br>
-          <SectionFive/>
-          <br></br><br></br>
-          <div id="meet-the-team-div">
-            <h1 id="team-header">Meet the <span id="team-header-word">team</span></h1>
+          <div id='firstContainer'>
+            <SectionOne/>
           </div>
-          <TeamBox/>
           <br></br><br></br>
-          <br></br><br></br>
-          <div id='subscribeBox'>
-            <Subscribe subscribe={this.subscribe} updateEmail={this.updateEmail} email={this.state.email} displayText={this.state.displayText} updateDisplayText={this.updateDisplayText}/>
+
+          <div id='featuresContainer'>
+            <h3 id='featuresContainerText'>Features</h3>
+            <SectionThree/>
+            <SectionFour/>
+            <SectionFive/>
           </div>
+
+          <br></br><br></br>
+          <div id='teamContainer'>
+            <h3 id='teamContainerText'>Team</h3>
+            <TeamBox/>
+          </div>
+
+          <div id='subscribeContainer'>
+            <h1>Stay in the loop</h1>
+            <h2>Additional features are constantly being added into StashQL. If you'd like to stay updated on all the exciting changes to come, consider subscribing to our newsletter!</h2>
+          </div>
+
+          <Subscribe subscribe={this.subscribe} updateEmail={this.updateEmail} email={this.state.email} displayText={this.state.displayText} updateDisplayText={this.updateDisplayText}/>
+        
           <br></br><br></br>
         </div>
         <Footer/>

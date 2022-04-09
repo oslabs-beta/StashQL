@@ -8,7 +8,7 @@ const {
 } = require('graphql');
 
 const authorsArray = [
-  { id: 1, name: 'J. K. Bowling' },
+  { id: 1, name: 'J. K. Rowling' },
   { id: 2, name: 'J. R. R. Tolkien' },
   { id: 3, name: 'Brent Weeks' },
 ];

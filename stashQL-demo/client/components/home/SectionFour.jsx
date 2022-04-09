@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import filler from '../../images/shepherd.png';
+import electricity from '../../images/electricity.png';
+import coding from '../../images/coding.png';
 
 const SectionFour = () => {
     return (
       <div id='section-four'>
         <div id="section-four-text">
           <div>
-            <h3>What StashQL can offer</h3>
-            <h5>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</h5>
+            <h1>Use the StashQL CLI</h1>
+            <h3>The StashQL package comes with a built-in command-line interface that you can use to check your query logs</h3>
           </div>
         </div>
         <div id="section-four-img">  
-          <img id='filler-img' src={filler}/>
+          <img id='filler-img' src={coding}/>
         </div>
       </div>
     );
