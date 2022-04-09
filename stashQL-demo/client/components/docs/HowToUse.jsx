@@ -31,6 +31,7 @@ const HowToUse = () => {
             </li>
         </ul>
         <b>Example:</b>
+        <br></br>
       </div>
       <TextArea2/>
       <div className="text-box">

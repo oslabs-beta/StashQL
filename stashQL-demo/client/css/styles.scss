@@ -335,8 +335,8 @@ html, body {
     display: flex;
     max-width: 1400px;
     flex-direction: column;
-    margin-left: 8%;
-    margin-right: 8%;
+    margin-left: 15%;
+    margin-right: 15%;
     padding-top: 100px;
 }
 
@@ -348,14 +348,15 @@ html, body {
     background-color: #24242c;
     border-radius: 5px;
     padding: 5px;
+    margin-left: 3%;
+    margin-right: 3%;
 }
 #doc-code-block span{
     font-family: Consolas,monaco,monospace;
 }
 #installBtn{
-    height: 35px;
-    // width:30px;
-    font-size: 17px;
+    padding: 5px;
+    font-size: 1em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -365,6 +366,8 @@ html, body {
     background-color: #9A51F7;
     color: #fff;
     cursor:pointer;
+    margin-left: 3%;
+    margin-right: 3%;
 }
 
 #doc-installation-code-and-btn-box{
