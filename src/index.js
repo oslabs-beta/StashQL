@@ -1,202 +1,200 @@
-const { graphql } = require('graphql');
-const fs = require('fs');
-const path = require('path');
-
-//Merging demo with StashQL
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const graphql_1 = require("graphql");
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 class stashql {
-  constructor(clientSchema, redisCache, life) {
-    this.queryHandler = this.queryHandler.bind(this);
-    this.refillCacheHandler = this.refillCacheHandler.bind(this);
-    this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
-    this.clearCacheHandler = this.clearCacheHandler.bind(this);
-    this.schema = clientSchema;
-    this.query = '';
-    this.cache = redisCache;
-    this.ttl = life;
-    this.startTime = 0;
-    this.endTime = 0;
-  }
-
-
-  async queryHandler(req, res, next) {      
-    // console.log("cwd: ", process.cwd()); // -> "/Users/Simon/dirname-example/StashQL package
-    if (!fs.existsSync(path.join(process.cwd(), "logs"))){
-      fs.mkdirSync(path.join(process.cwd(), "logs"), (err) => {
-        if (err) {
-          console.log('Error, could not make logs directory: ', err);
-          return next();
-        }
-      });
+    constructor(clientSchema, redisCache, life) {
+        this.queryHandler = this.queryHandler.bind(this);
+        this.refillCacheHandler = this.refillCacheHandler.bind(this);
+        this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
+        this.clearCacheHandler = this.clearCacheHandler.bind(this);
+        this.schema = clientSchema;
+        this.query = "";
+        this.cache = redisCache;
+        this.ttl = life;
+        this.startTime = 0;
+        this.endTime = 0;
     }
-    this.startTime = performance.now();
-    // console.log('request:');
-    // console.log(req.body.query);
-    this.query = req.body.query;
-    const query = req.body.query;
-    // if (query.slice(0, 8) === 'mutation') console.log('is a mutation');
-
-    //if the client did not submit a mutation (just a normal query)
-    if (query.slice(0, 8) !== 'mutation') {
-      try {
-        //if that query exists in our cache
-        if (await this.cache.exists(this.query)) {
-          console.log('cache hit!');
-          //we get the corresponding data and send it back
-          const data = await this.cache.get(this.query);
-          res.locals.data = JSON.parse(data);
-          this.endTime = performance.now();
-          res.locals.runTime = this.endTime - this.startTime;
-          console.log('performance: ', this.endTime - this.startTime);
-          fs.appendFileSync(
-            path.join(process.cwd(), "/logs/logs.txt"), 
-            `${JSON.stringify({type:"cache", query: this.query, data: JSON.parse(data), performance : this.endTime - this.startTime})}}\n`, 
-            err => { if (err) {console.error(err)}}
-          );
-          return next();
-        //if the query does not exists in our cache
-        } else {
-          console.log('database hit!');
-          //we run the query
-          await graphql({schema: this.schema, source: this.query})
-            .then((data) => JSON.stringify(data))
-            .then((data) => {
-              //then we set the query as a key in our cache and its value as the data we get back from running the query
-              this.cache.set(this.query, data);
-              //we also have it expire at a certain time
-              if (this.ttl !== undefined) {
-                this.cache.expire(this.query, this.ttl);
-              } 
-              //we send back the data
-              res.locals.data = JSON.parse(data);
-              this.endTime = performance.now();
-              res.locals.runTime = this.endTime - this.startTime;
-              console.log('performance: ', this.endTime - this.startTime);
-              fs.appendFileSync(
-                path.join(process.cwd(), "/logs/logs.txt"), 
-                `${JSON.stringify({type:"query", query: this.query, data: JSON.parse(data), performance : this.endTime - this.startTime})}\n`, 
-                err => { if (err) {console.error(err)}}
-              );
-              return next();
-            })
-            .catch((error) => {
-              console.log('Error in else block of queryHandler for mutations: ', error);
-            });
-        }
-      } catch (error) {
-        console.log('Error in running query: ', error);
-        return next(error);
-      }
-    } 
-
-    //if the client submitted a mutation
-    else if (query.slice(0, 8) === 'mutation') {
-      try {
-        //we run the mutation and get the data back
-        const data = JSON.stringify(await graphql({schema: this.schema, source: this.query}));
-        // console.log('the result data: ', data);
-
-        //we then check to see if the client use the refillCache argument - this means that the client wants to re-run all the queries in our cache
-        //that matches the field the client passed in and update their corresponding values (data) in the cache
-        if (query.includes('refillCache')) {
-          //this is to check what the field passed in was
-          const startingIdx = query.indexOf('refillCache');
-          const parenIdx = query.indexOf(')', startingIdx);
-          const therefillCacheArg = query.slice(startingIdx, parenIdx - 1);
-          const colonIdx = therefillCacheArg.indexOf(':');
-          const theField = therefillCacheArg.slice(colonIdx + 1);
-          const quoteIdx = theField.indexOf('"');
-          const theRealField = theField.slice(quoteIdx + 1);
-          //we then call refillCacheHandler and pass in the field
-          await this.refillCacheHandler(theRealField);
-        } 
-        else if (query.includes('clearRelatedFields')) {
-
-          const startingIdx = query.indexOf('clearRelatedField');
-          const parenIdx = query.indexOf(')', startingIdx);
-          const theClearRelatedFieldsArg = query.slice(startingIdx, parenIdx - 1);
-          const colonIdx = theClearRelatedFieldsArg.indexOf(':');
-          const theField = theClearRelatedFieldsArg.slice(colonIdx + 1);
-          const quoteIdx = theField.indexOf('"');
-          const theRealField = theField.slice(quoteIdx + 1);
-          await this.clearRelatedFieldsHandler(theRealField);
-        }
-        res.locals.data = JSON.parse(data);
-        this.endTime = performance.now();
-        res.locals.runTime = this.endTime - this.startTime;
-        console.log('performance: ', this.endTime - this.startTime);
-        fs.appendFileSync(
-          path.join(process.cwd(), "/logs/logs.txt"), 
-          `${JSON.stringify({type:"mutation", mutation: this.query, data: JSON.parse(data), performance : this.endTime - this.startTime})}}\n`, 
-          err => { if (err) {console.error(err)}});
-        return next();
-      } catch (error) {
-        console.log('Error in running mutation: ', error);
-        return next();
-      }
-    } 
-  }
-
-  // if you are running a mutation and you only have a few queries in your cache that deal with the field passed in,
-  // then you can run this refillCacheHandler function. Since this refillCacheHandler function will re-run all queries in  your
-  // cache that deals with the field passed in, it will make multiple network requests at once (in order to re-run your queries and get the most up-to-date data)
-  // so, you want to avoid using this function if you know you are going to have a ton of stuff in your cache that matches the passed-in field 
-  // in order to avoid making a ton of network requests and possibly causing your database to fail
-
-  //updating/deleting - updates all queries whose fields matches the field passed in
-  async refillCacheHandler(field) {
-    // console.log('refillCacheHandler invoked');
-    // console.log('the field: ', field);
-    //we get all the keys and assign it to queryKeys (it is an array of keys)
-    const queryKeys = await this.cache.keys('*');
-    //iterate through the array of query keys 
-    for (let queryKey of queryKeys) {
-      // console.log('current queryKey in refillCacheHandler: ', queryKey);
-      const secondCurly = queryKey.indexOf('{', 1);
-      const currQueryField =  queryKey.slice(1, secondCurly).trim();
-      //for each query key, we check to see if the field in that query matches the field passed in
-      //if so, that means we want to re-run that query, therefore updating its value in the cache
-      if (currQueryField === field) {
-        await graphql({schema: this.schema, source: queryKey})
-          .then((data) => JSON.stringify(data))
-          .then((data) => {
-            // console.log(data);
-            this.cache.set(queryKey, data);
-            if (this.ttl !== undefined) {
-              this.cache.expire(queryKey, this.ttl);
+    queryHandler(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!fs_1.default.existsSync(path_1.default.join(process.cwd(), "logs"))) {
+                try {
+                    fs_1.default.mkdirSync(path_1.default.join(process.cwd(), "logs"));
+                }
+                catch (error) {
+                    console.error("Error in running query: ", error);
+                    return next(error);
+                }
             }
-          })
-          .catch((error) => {
-            console.log('error in refillCacheHandler: ', error);
-          });
-      }
+            this.startTime = performance.now();
+            this.query = req.body.query;
+            const query = req.body.query;
+            if (query.slice(0, 8) !== "mutation") {
+                try {
+                    if (yield this.cache.exists(this.query)) {
+                        console.log("cache hit!");
+                        const data = (yield this.cache.get(this.query)) || "";
+                        res.locals.data = JSON.parse(data);
+                        this.endTime = performance.now();
+                        res.locals.runTime = this.endTime - this.startTime;
+                        console.log("performance: ", this.endTime - this.startTime);
+                        try {
+                            fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
+                                type: "cache",
+                                query: this.query,
+                                data: JSON.parse(data),
+                                performance: this.endTime - this.startTime,
+                            })}}\n`);
+                        }
+                        catch (error) {
+                            console.error("Error in running query: ", error);
+                            return next(error);
+                        }
+                        return next();
+                    }
+                    else {
+                        console.log("database hit!");
+                        yield (0, graphql_1.graphql)({ schema: this.schema, source: this.query })
+                            .then((data) => JSON.stringify(data))
+                            .then((data) => {
+                            this.cache.set(this.query, data);
+                            if (this.ttl !== undefined) {
+                                this.cache.expire(this.query, this.ttl);
+                            }
+                            res.locals.data = JSON.parse(data);
+                            this.endTime = performance.now();
+                            res.locals.runTime = this.endTime - this.startTime;
+                            console.log("performance: ", this.endTime - this.startTime);
+                            try {
+                                fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
+                                    type: "query",
+                                    query: this.query,
+                                    data: JSON.parse(data),
+                                    performance: this.endTime - this.startTime,
+                                })}\n`);
+                            }
+                            catch (error) {
+                                console.log(error);
+                                return next(error);
+                            }
+                            return next();
+                        })
+                            .catch((error) => {
+                            console.log("Error in else block of queryHandler for mutations: ", error);
+                        });
+                    }
+                }
+                catch (error) {
+                    console.log("Error in running query: ", error);
+                    return next(error);
+                }
+            }
+            else if (query.slice(0, 8) === "mutation") {
+                try {
+                    const data = JSON.stringify(yield (0, graphql_1.graphql)({ schema: this.schema, source: this.query }));
+                    if (query.includes("refillCache")) {
+                        const startingIdx = query.indexOf("refillCache");
+                        const parenIdx = query.indexOf(")", startingIdx);
+                        const therefillCacheArg = query.slice(startingIdx, parenIdx - 1);
+                        const colonIdx = therefillCacheArg.indexOf(":");
+                        const theField = therefillCacheArg.slice(colonIdx + 1);
+                        const quoteIdx = theField.indexOf('"');
+                        const theRealField = theField.slice(quoteIdx + 1);
+                        yield this.refillCacheHandler(theRealField);
+                    }
+                    else if (query.includes("clearRelatedFields")) {
+                        const startingIdx = query.indexOf("clearRelatedField");
+                        const parenIdx = query.indexOf(")", startingIdx);
+                        const theClearRelatedFieldsArg = query.slice(startingIdx, parenIdx - 1);
+                        const colonIdx = theClearRelatedFieldsArg.indexOf(":");
+                        const theField = theClearRelatedFieldsArg.slice(colonIdx + 1);
+                        const quoteIdx = theField.indexOf('"');
+                        const theRealField = theField.slice(quoteIdx + 1);
+                        yield this.clearRelatedFieldsHandler(theRealField);
+                    }
+                    res.locals.data = JSON.parse(data);
+                    this.endTime = performance.now();
+                    res.locals.runTime = this.endTime - this.startTime;
+                    console.log("performance: ", this.endTime - this.startTime);
+                    try {
+                        fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
+                            type: "mutation",
+                            mutation: this.query,
+                            data: JSON.parse(data),
+                            performance: this.endTime - this.startTime,
+                        })}}\n`);
+                    }
+                    catch (error) {
+                        console.log(error);
+                        return error;
+                    }
+                    return next();
+                }
+                catch (error) {
+                    console.log("Error in running mutation: ", error);
+                    return next();
+                }
+            }
+        });
     }
-  }
-
-  // if you know that your cache will have a ton of queries that matches the field, you can run this function. It will clear your cache so that the next time
-  // you run a query, it will simply re-run ONLY that query, NOT ALL queries that matches the field. 
-  async clearRelatedFieldsHandler(field) {
-    const queryKeys = await this.cache.keys('*');
-
-    for (let queryKey of queryKeys) {
-      const secondCurly = queryKey.indexOf('{', 1);
-      const currQueryField =  queryKey.slice(1, secondCurly).trim();
-      if (currQueryField === field) {
-        await this.cache.del(queryKey);
-      }
+    refillCacheHandler(field) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryKeys = yield this.cache.keys("*");
+            for (let queryKey of queryKeys) {
+                const secondCurly = queryKey.indexOf("{", 1);
+                const currQueryField = queryKey.slice(1, secondCurly).trim();
+                if (currQueryField === field) {
+                    yield (0, graphql_1.graphql)({ schema: this.schema, source: queryKey })
+                        .then((data) => JSON.stringify(data))
+                        .then((data) => {
+                        this.cache.set(queryKey, data);
+                        if (this.ttl !== undefined) {
+                            this.cache.expire(queryKey, this.ttl);
+                        }
+                    })
+                        .catch((error) => {
+                        console.error("error in refillCacheHandler: ", error);
+                    });
+                }
+            }
+        });
     }
-  }
-
-  //clears all keys from the cache
-  async clearCacheHandler(req, res, next) {
-    try {
-      await this.cache.flushAll();
-      return next();
-    } catch (error) {
-      console.log('error in clearCacheHandler: ', error);
-      return next();
+    clearRelatedFieldsHandler(field) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryKeys = yield this.cache.keys("*");
+            for (let queryKey of queryKeys) {
+                const secondCurly = queryKey.indexOf("{", 1);
+                const currQueryField = queryKey.slice(1, secondCurly).trim();
+                if (currQueryField === field) {
+                    yield this.cache.del(queryKey);
+                }
+            }
+        });
     }
-  }
-
+    clearCacheHandler(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.cache.flushAll();
+                return next();
+            }
+            catch (error) {
+                console.error("error in clearCacheHandler: ", error);
+                return next();
+            }
+        });
+    }
 }
-
 module.exports = stashql;

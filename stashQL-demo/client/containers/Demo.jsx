@@ -1,30 +1,27 @@
 import React, { Component, useState, useEffect } from 'react';
 import Navbar from '../components/Nav.jsx';
-// import LineChart from '../components/LineChart.js';
 import { Line } from 'react-chartjs-2';
-import {Chart as ChartJS} from 'chart.js/auto'
-// import {UserData} from '../components/Data.js';
+import {Chart as ChartJS} from 'chart.js/auto';
+import { animateScroll } from 'react-scroll';
 
 const Demo = (props) => {
 
-  const query1 = ` query {
+  const query1 = `{
     authors {
       id
       name
+      books {
+        name
+      }
     }
-  }`
+}`
 
-  const query2 = ` query {
-    books {
+  const mutation1 = `mutation {
+    addAuthor(name: "John Smith", refillCache: "authors") {
       name
     }
-  }`
+}`
 
-  const query3 = ` query {
-    books {
-      id
-    }
-  }`
 
   const [query, setQuery] = useState(query1);
   const [returnedData, setReturnedData] = useState('');
@@ -67,39 +64,91 @@ const Demo = (props) => {
       .catch((err) => console.log('Error: ', err));
   };
 
+  const submitMutation = async () => {
+    let method = 'POST';
+    await fetch('/api/graphql', {
+      method,
+      body: JSON.stringify({query}),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((res) => res.json())
+      .then(({ data }) => {
+        setReturnedData(JSON.stringify(data, null, 2));
+      })
+      .catch((err) => console.log('Error: ', err));
+  };
+
+  const clearCache = async () => {
+    console.log('clearing cache...');
+    let method = 'POST';
+    await fetch('/api/clearCache', {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(console.log('cleared!'))
+      .catch((err) => console.log('Error: ', err));
+  }
+
   return (
+
     <div>
       <Navbar />
 
-      <div id='queryData'>
-        <h3 onClick={() => {setQuery(query1); addQueries([]); addSpeeds([])}}>Query 1</h3>
-        <h3 onClick={() => {setQuery(query2); addQueries([]); addSpeeds([])}}>Query 2</h3>
-        <h3 onClick={() => {setQuery(query3); addQueries([]); addSpeeds([])}}>Query 3</h3>
+      <div id='demoContainer'>
+
+        <div id='leftSide'>
+
+          <div id='leftBox'>
+            <div id='leftBoxOptions'>
+              <h3 id='query1' onClick={() => {setQuery(query1); setReturnedData('')}}>Query</h3>
+              <h3 id='mutation1' onClick={() => {setQuery(mutation1); setReturnedData('')}}>Mutation</h3>
+            </div>
+            <textarea value={query} readOnly={true} id='selectedQuery'>
+            </textarea>
+            <div id='btnContainer'>
+              {query === query1 ? <button id='submitBtn' onClick={() => {submitQuery()}}>Submit Query</button> : <button id='submitBtn' onClick={() => {submitMutation()}}>Submit Mutation</button>}
+              <button id='clearBtn' onClick={() => {clearCache()}}>Clear Cache</button>
+            </div>
+
+          </div>
+
+          <div id='rightBox'>
+            <div id='rightBoxOptions'>
+              <h3>Returned Data</h3>
+            </div>
+            <textarea value={returnedData} readOnly={true} id='returnedData'>
+            </textarea>
+          </div>
+
+        </div>
+
+        <div id='rightSide'>
+          <div id='rightBoxOptions'>
+            <h3>Query Speeds</h3>
+          </div>
+          <div id='chart'>
+            <Line data={userData} options={{
+              scales: {
+                yAxis: {
+                  min: 0,
+                  max: 30,
+                },
+              },
+            }}/>
+          </div>
+        </div>
       </div>
 
-      <textarea value={query} readOnly={true} id='queryContainer'>
-      </textarea>
-      
-      <button onClick={() => {submitQuery()}}>Submit Query</button>
-
-      <br/>
-
-      <textarea value={returnedData} readOnly={true} id='returnedData'>
-      </textarea>
-
-      <div style={{width: 700}}>
-        <Line data={userData} options={{
-          scales: {
-            yAxis: {
-              min: 0,
-              max: 30,
-            },
-          },
-        }}/>
-      </div>
+       <div id='demoText'>
+         <h1>See first-hand what StashQL can do for your GraphQL applications</h1>
+         <p>Upon the first time submitting the query above, StashQL will cache the returned data. Running the query again will retrieve the data from the cache, resulting in faster queries and improved performance.</p>
+         <h2>What about mutations?</h2>
+         <p>In the mutation example above, the refillCache argument is passed in with a value of "authors". Upon seeing this, StashQL will update any data within the cache that queried for authors</p>
+       </div>
 
     </div>
   );
 }
 
 export default Demo;
+

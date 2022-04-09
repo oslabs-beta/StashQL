@@ -1,7 +1,7 @@
 const styles = {
   customizeToolbar: {
-    minHeight: 5
-  }
+    minHeight: 5,
+  },
 };
 
 export default styles;

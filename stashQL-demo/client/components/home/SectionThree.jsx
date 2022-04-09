@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import filler from '../../images/shepherd.png';
+import electricity from '../../images/electricity.png'
+import coding from '../../images/coding.png';
+
 
 const SectionThree = () => {
     return (
       <div id='section-three'>
         <div id="section-three-img">  
-          <img id='filler-img' src={filler}/>
+          <img id='filler-img' src={electricity}/>
         </div>
         <div id="section-three-text">
           <div>
-            <h3>What StashQL can offer</h3>
-            <h5>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</h5>
+            <h1>Speed Up Your Apps</h1>
+            <h3>StashQL can speed up your GraphQL queries by implementing server-side caching and handling mutations that occur within your database</h3>
           </div>
         </div>
       </div>
