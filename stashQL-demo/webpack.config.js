@@ -27,6 +27,10 @@ module.exports = {
         test: /\.png|jpg|gif$/,
         use: ["file-loader"],
       },
+      {
+        test: /\.mp4$/,
+        loader: 'file-loader',
+      },
     ],
   },
   plugins: [

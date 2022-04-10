@@ -1,10 +1,12 @@
 import React from 'react';
 import { FaCopy } from "react-icons/fa";
+import vid from '../../images/clear-logs-1.mp4';
 
 const Installation = (props) => {
     return (
 
       <div id="doc-installation">
+      
         <h1>Using StashQL</h1>
         <div id='installation-text'>
           <p>StashQL can be installed as a dependency</p>
