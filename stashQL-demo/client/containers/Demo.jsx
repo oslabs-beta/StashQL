@@ -8,7 +8,6 @@ const Demo = (props) => {
 
   const query1 = `{
     authors {
-      id
       name
       books {
         name
@@ -22,18 +21,21 @@ const Demo = (props) => {
     }
 }`
 
-
   const [query, setQuery] = useState(query1);
   const [returnedData, setReturnedData] = useState('');
   const [runTimes, setRunTime] = useState([]);
   const [queries, addQueries] = useState([]);
   const [speeds, addSpeeds] = useState([]);
 
+
   const [userData, setUserData] = useState({
     labels: [],
     datasets: [{
-      label: 'Run time of current query',
-      data: []
+      label: 'Query Performance',
+      data: [],
+      backgroundColor: ["#9A51F7"],
+      borderColor: "black",
+      borderWidth: 2
     }]
   });
 
@@ -42,10 +44,41 @@ const Demo = (props) => {
       labels: queries,
       datasets: [{
         label: 'Run time of current query',
-        data: speeds
+        data: speeds,
+        backgroundColor: ["#9A51F7"],
+        borderColor: "black",
+        borderWidth: 2
       }]
     })
   }, [queries, speeds]);
+
+  // useEffect(() => {
+  //   window.addEventListener('beforeunload', demoAuthor)
+  //   return () => {
+  //     window.removeEventListener('beforeunload', demoAuthor)
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    window.onbeforeunload = function() {
+      var result = demoAuthor();
+      return result;
+    }
+  }, []);
+
+  const demoAuthor = async (e) => {
+    // e.preventDefault();
+    clearCache();
+    let method = 'DELETE';
+    await fetch('/api/demoAuthor', {
+      method,
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log('Errpr in deleting: ', err));
+    return demoAuthor;
+  }
 
   const submitQuery = async () => {
     let method = 'POST';
@@ -92,7 +125,7 @@ const Demo = (props) => {
   return (
 
     <div>
-      <Navbar />
+      <Navbar demoAuthor={demoAuthor}/>
 
       <div id='demoContainer'>
 
@@ -122,16 +155,38 @@ const Demo = (props) => {
 
         </div>
 
-        <div id='rightSide'>
+        {/* <div id='rightSide'>
           <div id='rightBoxOptions'>
-            <h3>Query Speeds</h3>
+            <h3 id='querySpeed'>Query Speeds</h3>
           </div>
           <div id='chart'>
             <Line data={userData} options={{
               scales: {
                 yAxis: {
                   min: 0,
-                  max: 30,
+                  max: 350,
+                },
+              },
+            }}/>
+          </div>
+        </div> */}
+
+        <div id='rightSide'>
+          <div id='rightBoxOptions'>
+            <h3 id='querySpeed'>Query Speeds</h3>
+          </div>
+          <div id='chart'>
+            <Line data={userData} options={{
+              scales: {
+                yAxes: {
+                  min: 0,
+                  max: 450,
+                  ticks: {
+                    color: 'black',
+                    font: {
+                      size: 17
+                    }
+                  }
                 },
               },
             }}/>
