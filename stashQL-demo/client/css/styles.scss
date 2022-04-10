@@ -75,6 +75,7 @@
     border: none;
     background-color: #9A51F7;
     color: #fff;
+    cursor: pointer;
 }
 
 #subscribeModal {
@@ -189,7 +190,7 @@ html, body {
     // justify-content: space-around;
     // align-items: center;
     align-items: center;
-    // gap: 20px;
+    gap: 20px;
     letter-spacing: 1px;
 }
 
@@ -247,6 +248,7 @@ html, body {
     #section-one {
         flex-wrap: wrap;
         margin-top: 0;
+        gap: 0;
     }
 
     #section-one-text h1 {
@@ -715,33 +717,34 @@ html, body {
 
 /*=========================DEMO=========================*/
 
-// #query1,
-// #mutation1 {
-//     display: inline-block;
-//     position: relative;
-//     cursor: pointer;
-//     padding-bottom: 0.35rem;
-// }
 
-// #query1::before,
-// #mutation1::before {
-//     content: "";
-//     position: absolute;
-//     // left: 0;
-//     right: 0;
-//     bottom: 0;
-//     width: 0;
-//     height: 2px;
-//     background-color: #FC5CAC;
-//     transition: width 0.25s ease-out;
-// }
+#query1,
+#mutation1 {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    padding-bottom: 0.075rem;
+}
 
-// #query1:hover::before,
-// #mutation1:hover::before  {
-//     width: 100%;
-//     left: 0;
-//     right: auto;
-// }
+#query1::before,
+#mutation1::before {
+    content: "";
+    position: absolute;
+    // left: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background-color: #9A51F7;
+    transition: width 0.25s ease-out;
+}
+
+#query1:hover::before,
+#mutation1:hover::before  {
+    width: 100%;
+    left: 0;
+    right: auto;
+}
 
 #demoContainer {
     text-align: center;
@@ -755,7 +758,7 @@ html, body {
 #leftSide {
     padding-bottom: 20px;
     border-radius: 20px;
-    width: 700px;
+    width: 750px;
     display: flex;
     gap: 20px;
     justify-content: center;
@@ -765,8 +768,8 @@ html, body {
 }
 
 #rightSide {
-    padding-left: 30px;
-    padding-right: 30px;
+    // padding-left: 30px;
+    // padding-right: 30px;
 }
 
 #chart {
@@ -795,11 +798,12 @@ html, body {
     width: 100%;
     height: 90%;
     resize: none;
-    font-size: 0.8rem;
+    font-size: 0.76rem;
     border-radius: 20px;
     padding-top: 20px;
-    padding-left: 20px;
+    padding-left: 5px;
     border: none;
+    line-height: 1rem;
 }
 
 #returnedData {
@@ -820,6 +824,7 @@ html, body {
     background-color: #9A51F7;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 #clearBtn {
@@ -829,6 +834,7 @@ html, body {
     background-color: #9A51F7;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 #demoText {
