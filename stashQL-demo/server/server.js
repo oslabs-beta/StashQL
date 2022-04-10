@@ -5,6 +5,7 @@ const cors = require("cors");
 const redis = require("redis");
 const schema = require("./schema");
 const subscribeController = require("./controllers/subscribeController");
+const demoController = require("./controllers/demoController");
 
 const app = express();
 
@@ -28,19 +29,20 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+
 app.post("/api/subscribe", subscribeController.subscribe, (req, res) => {
   return res.status(200).json(res.locals.data);
 });
-
-// app.use("/api/graphql", StashQL.queryHandler, (req, res) => {
-//   return res.status(200).json(res.locals.data);
-// })
 
 app.use("/api/graphql", StashQL.queryHandler, (req, res) => {
   return res.status(200).json({data: res.locals.data, runTime: res.locals.runTime});
 });
 
 app.use("/api/clearCache", StashQL.clearCacheHandler, (req, res) => {
+  res.sendStatus(200);
+});
+
+app.use("/api/demoAuthor", demoController.removeAuthor, (req, res) => {
   res.sendStatus(200);
 });
 
