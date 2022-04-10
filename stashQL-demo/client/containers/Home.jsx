@@ -12,6 +12,7 @@ import SectionFour from '../components/home/SectionFour.jsx';
 import filler from '../images/shepherd.png';
 import tree from '../images/tree.jpg';
 import SectionFive from '../components/home/SectionFive.jsx';
+
 class Home extends React.Component {
   constructor(props) {
     super(props);

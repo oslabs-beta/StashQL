@@ -2,9 +2,9 @@ import React from 'react';
 
 const TextArea3 = () => {
   const docCodeBlockQueryHandler = 
-  `app.use ( '/graphql', StashQL.queryHandler, ( req, res ) => { \n
-      return res.status(200).json( res.locals.data );\n
-  });`;
+  `app.use('/graphql', StashQL.queryHandler, (req, res) => {
+    return res.status(200).json(res.locals.data);
+});`;
   return (
     <div id="textarea-box">
       <textarea

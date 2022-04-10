@@ -1,17 +1,20 @@
 import React from 'react';
 
 const TextArea4 = () => {
-  const query = 
-    `query {
-        books {
-            name
-        }
-    }`;
+
+const query = `query {
+  authors {
+    name
+    books {
+      name
+    }
+  }
+}`
   return (
     <div id="textarea-box">
       <textarea
         id="doc-code-block"
-        rows='5'
+        rows='8'
         readOnly
         value={query}
       />

@@ -1,15 +1,49 @@
 import React from 'react';
 import Installation from './Installation.jsx';
 import HowToUse from './HowToUse.jsx';
+import Cli from './Cli.js';
 
+// const DocsBox = () => {
+//     return (
+//       <div id="doc-box">
+//         <Installation/>
+//         <HowToUse/>
+//       </div>
+//     )
+// };
 
-const DocsBox = () => {
+class DocsBox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      copied: false
+    };
+
+    this.setCopiedTrue = this.setCopiedTrue.bind(this);
+  }
+
+  async setCopiedTrue() {
+    await this.setState({
+      copied: true 
+    });
+  };
+
+  // async setCopiedFalse() {
+  //   await this.setState({
+  //     copied: false
+  //   });
+  // };
+
+  render() {
     return (
       <div id="doc-box">
-        <Installation/>
+        <Installation setCopiedTrue={this.setCopiedTrue} />
+        {this.state.copied && <p>Copied to clipboard!</p>}
         <HowToUse/>
+        <Cli/>
       </div>
     )
+  }
 };
 
 export default DocsBox;
