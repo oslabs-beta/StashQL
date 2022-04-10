@@ -530,13 +530,10 @@ html, body {
 }
   
 /*=========================DOC CSS=========================*/
-#doc-box{
+#docsContainer {
+    padding-top: 125px;
     display: flex;
-    max-width: 1400px;
-    flex-direction: column;
-    margin-left: 8%;
-    margin-right: 8%;
-    padding-top: 50px;
+    justify-content: center;
 }
 
 #doc-code-block{
@@ -546,12 +543,19 @@ html, body {
     background-color: #24242c;
     border-radius: 5px;
     resize: none;
-    width: 75%;
+    width: 70%;
 }
 #doc-code-block span{
     font-family: Consolas,monaco,monospace;
 }
 
+#doc-box{
+    display: flex;
+    max-width: 1400px;
+    flex-direction: column;
+    margin-left: 8%;
+    margin-right: 8%;
+}
 
 
 

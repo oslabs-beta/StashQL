@@ -3,15 +3,6 @@ import Installation from './Installation.jsx';
 import HowToUse from './HowToUse.jsx';
 import Cli from './Cli.js';
 
-// const DocsBox = () => {
-//     return (
-//       <div id="doc-box">
-//         <Installation/>
-//         <HowToUse/>
-//       </div>
-//     )
-// };
-
 class DocsBox extends React.Component {
   constructor(props) {
     super(props);
@@ -27,12 +18,6 @@ class DocsBox extends React.Component {
       copied: true 
     });
   };
-
-  // async setCopiedFalse() {
-  //   await this.setState({
-  //     copied: false
-  //   });
-  // };
 
   render() {
     return (

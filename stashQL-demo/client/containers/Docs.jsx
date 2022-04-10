@@ -6,8 +6,10 @@ const Docs = () => {
     return (
         <div>
             <Nav />
-            <DocsBox/>
-            <Footer/>
+            <div id='docsContainer'>
+              <DocsBox/>
+            </div>
+            {/* <Footer/> */}
         </div>
     );
 };
