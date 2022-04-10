@@ -21,9 +21,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaNpm } from "react-icons/fa";
 
 
-const pages = ['Home', 'Docs', 'Demo', 'Team'];
+const pages = ['Home', 'Docs', 'Demo'];
 
-const Navbar = () => {
+const Navbar = (props) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -79,7 +79,7 @@ const Navbar = () => {
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    <Link style={{textDecoration: "none", color: "black"}} to={`/${page}`}>
+                    <Link onClick={props.demoAuthor} style={{textDecoration: "none", color: "black"}} to={`/${page}`}>
                       {page}
                     </Link>
                   </Typography>
@@ -88,7 +88,7 @@ const Navbar = () => {
             </Menu>
           </Box>
 
-          <Box id='leftNav' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }}}>
+          {/* <Box id='leftNav' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }}}>
             {pages.map((page) => (
               <Button
                 key={page}
@@ -101,7 +101,23 @@ const Navbar = () => {
                 </Link>
               </Button>
             ))}
+          </Box> */}
+
+          <Box id='leftNav' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }}}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+                style={{fontSize: '1rem', fontFamily: 'Montserrat'}}
+              >
+                <Link className='navLinks' onClick={props.demoAuthor} style={{textDecoration: "none", color: "black"}} to={`/${page}`}>
+                  {page}
+                </Link>
+              </Button>
+            ))}
           </Box>
+
 
           <Box id='navLogo' sx={{ flexGrow: 1.5, display: { xs: 'none', md: 'flex' }}}>
             <Avatar alt="Remy Sharp" src={logo} style={{width: '125px'}} />
@@ -109,11 +125,11 @@ const Navbar = () => {
 
           <Box id='rightNav'>
             <a href='https://twitter.com/StashQL'>
-              <TwitterIcon style={{color: 'black'}}/>
+              <TwitterIcon onClick={props.demoAuthor} style={{color: 'black'}}/>
             </a>
             <LinkedInIcon style={{color: 'black'}}/>
             <a href='https://www.npmjs.com/package/stashql'>
-              <FaNpm style={{color: '#CC3534', fontSize: '35px'}}/>
+              <FaNpm onClick={props.demoAuthor} style={{color: '#CC3534', fontSize: '35px'}}/>
             </a>
           </Box>
 
