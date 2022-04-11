@@ -109,7 +109,7 @@ const HowToUse = () => {
         <div id='mutation-text'>
           <p>StashQL also provides two methods to update your cached data when a mutation occurs in your database:</p>
           <p>
-            <p><Highlighter highlightClassName="YourHighlightClass" searchWords={["refillCache"]} autoEscape={true} textToHighlight="refillCache"/></p>
+            <b><Highlighter highlightClassName="YourHighlightClass" searchWords={["refillCache"]} autoEscape={true} textToHighlight="refillCache"/></b>
             Since the refillCache method will re-run all the cached queries that
             contain data corresponding with the passed-in field, it is recommended 
             that the refillCache method is used in cases where your cache contains
@@ -122,15 +122,15 @@ const HowToUse = () => {
           <p>Now, we are adding an author to our database. However, we want to ensure that any cached data dealing with authors will be updated. By passing in the refillCache method as an argument to the mutation and its value as 'authors', StashQL will go into our cache and update any data that deal with authors</p>
 
           <p>
-            <p><Highlighter highlightClassName="YourHighlightClass" searchWords={["clearRelatedFields"]} autoEscape={true} textToHighlight="clearRelatedFields"/></p>  
+            <b><Highlighter highlightClassName="YourHighlightClass" searchWords={["clearRelatedFields"]} autoEscape={true} textToHighlight="clearRelatedFields"/></b>  
             If you have many cached queries that correspond with the same passed-in field, 
             it is recommended that the clearRelatedFields method is used, since this method will clear any cached queries and relevant data so that the next time
             you run a query, it will re-run ONLY that query, rather than ALL the queries that matches the passed-in field. 
           </p>
           <TextArea7/>
           <p>If our cache contains many queries and data that deal with authors, we can use the clearRelatedFields method instead of the refillCache method in order to avoid making too many requests. The clearRelatedFields method is also passed in as an argument and its value will also be 'authors'. StashQL will clear any cached data that deals with authors so that the next time we query for authors again, we avoid making multiple requests and fresh data is returned.</p>
+        </div>
       </div>
-    </div>
     </div>
 
   );
