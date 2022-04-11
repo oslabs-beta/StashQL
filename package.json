@@ -5,6 +5,7 @@
   "main": "script.js",
   "devDependencies": {
     "@types/filesystem": "^0.0.32",
+    "@types/jest": "^27.4.1",
     "@types/node": "^17.0.23",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
@@ -16,6 +17,7 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.5.1",
+    "jest-fetch-mock": "^3.0.3",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.2",
     "tsc-watch": "^5.0.3",

@@ -137,4 +137,9 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType,
 });
 
-module.exports = schema;
+module.exports = {
+  schema: schema,
+  booksArray: booksArray,
+  authorsArray: authorsArray
+}
+
