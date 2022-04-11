@@ -188,6 +188,11 @@ const Demo = (props) => {
                     }
                   }
                 },
+                xAxes: {
+                  ticks: {
+                    color: 'black'
+                  }
+                },
               },
             }}/>
           </div>

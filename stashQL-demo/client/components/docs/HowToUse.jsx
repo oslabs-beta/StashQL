@@ -110,6 +110,8 @@ const HowToUse = () => {
           <p>StashQL also provides two methods to update your cached data when a mutation occurs in your database:</p>
           <p>
             <b><Highlighter highlightClassName="YourHighlightClass" searchWords={["refillCache"]} autoEscape={true} textToHighlight="refillCache"/></b>
+            <br/>
+            <br/>
             Since the refillCache method will re-run all the cached queries that
             contain data corresponding with the passed-in field, it is recommended 
             that the refillCache method is used in cases where your cache contains
@@ -123,6 +125,8 @@ const HowToUse = () => {
 
           <p>
             <b><Highlighter highlightClassName="YourHighlightClass" searchWords={["clearRelatedFields"]} autoEscape={true} textToHighlight="clearRelatedFields"/></b>  
+            <br/>
+            <br/>
             If you have many cached queries that correspond with the same passed-in field, 
             it is recommended that the clearRelatedFields method is used, since this method will clear any cached queries and relevant data so that the next time
             you run a query, it will re-run ONLY that query, rather than ALL the queries that matches the passed-in field. 
