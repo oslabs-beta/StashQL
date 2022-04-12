@@ -9,8 +9,6 @@ import SectionOne from '../components/home/SectionOne.jsx';
 import SectionTwo from '../components/home/SectionTwo.jsx';
 import SectionThree from '../components/home/SectionThree.jsx';
 import SectionFour from '../components/home/SectionFour.jsx';
-import filler from '../images/shepherd.png';
-import tree from '../images/tree.jpg';
 import SectionFive from '../components/home/SectionFive.jsx';
 
 class Home extends React.Component {
@@ -68,21 +66,25 @@ class Home extends React.Component {
           </div>
           <br></br><br></br>
 
-          <div id='featuresContainer'>
+          <div id='featContainer'>
             <h3 id='featuresContainerText'>Features</h3>
             <SectionThree/>
             <SectionFour/>
             <SectionFive/>
           </div>
 
+          
+          
           <br></br><br></br>
           <div id='teamContainer'>
-            <h3 id='teamContainerText'>Team</h3>
+            <div id='teamText'>
+              <h1 id='teamContainerText'>Meet The Team</h1>
+            </div>
             <TeamBox/>
           </div>
 
           <div id='subscribeContainer'>
-            <h1>Stay in the loop</h1>
+            <h1>Stay In The Loop</h1>
             <h2>Additional features are constantly being added into StashQL. If you'd like to stay updated on all the exciting changes to come, consider subscribing to our newsletter!</h2>
           </div>
 

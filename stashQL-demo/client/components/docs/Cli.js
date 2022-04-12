@@ -3,6 +3,9 @@ import Highlighter from "react-highlight-words";
 import allLogs from '../../images/all-logS.mp4';
 import clearLogs from '../../images/clear-logs.mp4';
 
+// import allLogs from '../../../public/images/all-logs.mp4';
+// import clearLogs from '../../../public/images/clear-logs.mp4';
+
 
 const Cli = () => {
   return (

@@ -39,10 +39,11 @@ module.exports = {
     }),
   ],
   devServer: {
-    static: {
-      publicPath: "build",
-      directory: path.resolve(__dirname, "build"),
-    },
+    historyApiFallback: true,
+    // static: {
+    //   publicPath: "build",
+    //   directory: path.resolve(__dirname, "build"),
+    // },
     proxy: {
       "/api": "http://localhost:3000",
     },

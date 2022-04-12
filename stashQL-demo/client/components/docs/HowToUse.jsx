@@ -86,13 +86,13 @@ const HowToUse = () => {
         <h4>Parameters:</h4>
         <ul>
           <li>
-            <p><b>schema:</b> your GraphQL schema (required)</p>
+            <p><b><Highlighter highlightClassName="YourHighlightClass" searchWords={["schema:"]} autoEscape={true} textToHighlight="schema:"/></b> your GraphQL schema (required)</p>
           </li>
           <li>
-            <p><b>cache:</b>  your Redis cache (required)</p>
+            <p><b><Highlighter highlightClassName="YourHighlightClass" searchWords={["cache:"]} autoEscape={true} textToHighlight="cache:"/></b> your Redis cache (required)</p>
           </li>
           <li>
-            <p><b>ttl:</b> an integer value that specifies the number of seconds until the key expires in the Redis cache (optional)</p>
+            <p><b><Highlighter highlightClassName="YourHighlightClass" searchWords={["ttl:"]} autoEscape={true} textToHighlight="ttl:"/></b> the Time to Live of your cached data(optional)</p>
           </li>
         </ul>
         <TextArea2/>

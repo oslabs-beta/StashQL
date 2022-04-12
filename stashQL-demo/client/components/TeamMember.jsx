@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import linkedin from '../images/logos/Navy_LinkedIn.png'
 import github from '../images/logos/Navy_GitHub.png'
+// import linkedin from '../../public/images/logos/Navy_LinkedIn.png'
+// import github from '../../public/images/logos/Navy_GitHub.png'
 
 const TeamMember = (props) => {
     return (

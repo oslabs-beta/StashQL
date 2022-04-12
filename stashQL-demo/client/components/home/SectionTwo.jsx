@@ -5,6 +5,8 @@ import { faBolt } from '@fortawesome/free-solid-svg-icons';
 import { faTerminal } from '@fortawesome/free-solid-svg-icons';
 import { feather } from '../../images/feather.png';
 
+// import { feather } from '../../../public/images/feather.png';
+
 const SectionTwo = () => {
     return (
       <div id='features'>

@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import filler from '../../images/shepherd.png';
 import electricity from '../../images/electricity.png';
 import coding from '../../images/coding.png';
+import vid from '../../images/caching-3.mp4';
+// import vid from '../../images/caching-2.mp4';
+
+
+// import filler from '../../../public/images/shepherd.png';
+// import electricity from '../../../public/images/electricity.png';
+// import coding from '../../../public/images/coding.png';
 
 const SectionFour = () => {
     return (
@@ -13,7 +20,13 @@ const SectionFour = () => {
           </div>
         </div>
         <div id="section-four-img">  
-          <img id='filler-img' src={coding}/>
+          {/* <img id='filler-img' src={coding}/> */}
+          <video loop autoPlay muted className="featureVid">
+            <source
+              src={vid}
+              type="video/mp4"
+            />
+          </video>
         </div>
       </div>
     );

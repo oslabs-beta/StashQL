@@ -23,7 +23,7 @@ class DocsBox extends React.Component {
     return (
       <div id="doc-box">
         <Installation setCopiedTrue={this.setCopiedTrue} />
-        {this.state.copied && <h6>Copied to clipboard!</h6>}
+        {this.state.copied && <h4 id='copiedText'>Copied to clipboard!</h4>}
         <HowToUse/>
         <Cli/>
       </div>

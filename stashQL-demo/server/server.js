@@ -21,14 +21,29 @@ app.use(express.json());
 
 const StashQL = new stashql(schema, redisCache);
 
+// if (process.env.NODE_ENV === "production") {
+//   app.use("/build", express.static(path.join(__dirname, "../build")));
+
+//   app.get("/", (req, res) => {
+//     return res.status(200).sendFile(path.join(__dirname, "../client/index.html"));
+//   });
+// }
+
+// if (process.env.NODE_ENV === "production") {
+//   app.use("/build", express.static(path.join(__dirname, "../build")));
+
+//   app.get("/", (req, res) => {
+//     return res.status(200).sendFile(path.join(__dirname, "../build/index.html"));
+//   });
+// }
+
 if (process.env.NODE_ENV === "production") {
   app.use("/build", express.static(path.join(__dirname, "../build")));
 
-  app.get("/", (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, "../src/index.html"));
+  app.get("/*", (req, res) => {
+    return res.status(200).sendFile(path.join(__dirname, "../build/index.html"));
   });
 }
-
 
 app.post("/api/subscribe", subscribeController.subscribe, (req, res) => {
   return res.status(200).json(res.locals.data);
@@ -41,6 +56,7 @@ app.use("/api/graphql", StashQL.queryHandler, (req, res) => {
 app.use("/api/clearCache", StashQL.clearCacheHandler, (req, res) => {
   res.sendStatus(200);
 });
+
 
 app.use("/api/demoAuthor", demoController.removeAuthor, (req, res) => {
   res.sendStatus(200);

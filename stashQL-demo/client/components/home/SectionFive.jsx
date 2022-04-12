@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
-import filler from '../../images/shepherd.png';
-import feathers from '../../images/feathers.png'
+import vid from '../../images/caching-3.mp4';
+
+// import filler from '../../../public/images/shepherd.png';
+// import feathers from '../../../public/images/feathers.png';
 
 const SectionFive = () => {
     return (
       <div id='section-five'>
         <div id="section-five-img">  
-          <img id='filler-img' src={feathers}/>
+          {/* <img id='filler-img' src={feathers}/> */}
+          <video loop autoPlay muted className="featureVid">
+            <source
+              src={vid}
+              type="video/mp4"
+            />
+          </video>
         </div>
         <div id="section-five-text">
           <div>
