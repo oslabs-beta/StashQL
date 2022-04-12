@@ -84,7 +84,6 @@ class stashql {
             .then((data: string) => {
               //then we set the query as a key in our cache and its value as the data we get back from running the query
               this.cache.set(this.query, data);
-              console.log("DELETE", this.query);
               //we also have it expire at a certain time
               if (this.ttl !== undefined) {
                 this.cache.expire(this.query, this.ttl);

@@ -71,7 +71,6 @@ class stashql {
                             .then((data) => JSON.stringify(data))
                             .then((data) => {
                             this.cache.set(this.query, data);
-                            console.log("DELETE", this.query);
                             if (this.ttl !== undefined) {
                                 this.cache.expire(this.query, this.ttl);
                             }
