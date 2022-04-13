@@ -37,9 +37,11 @@ app.post("/api/subscribe", subscribeController.subscribe, (req, res) => {
 // })
 
 app.use("/api/graphql", StashQL.queryHandler, (req, res) => {
-  return res
-    .status(200)
-    .json({ data: res.locals.data, runTime: res.locals.runTime });
+  return res.status(200).json({data: res.locals.data, runTime: res.locals.runTime});
+});
+
+app.use("/api/clearCache", StashQL.clearCacheHandler, (req, res) => {
+  res.sendStatus(200);
 });
 
 app.use("*", (req, res) => {
