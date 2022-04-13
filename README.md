@@ -1,6 +1,7 @@
 <p align="center">
-	<img src='./stashQl-demo/client/logo1.jpg/'>
-  <a href="https://github.com/oslabs-beta/StashQL"><img src="https://img.shields.io/badge/license-MIT-blue"/></a>
+	<img src='./stashQL-demo/client/images/logo1.jpg/' alt="logo" width="300">
+	<br>
+  	<a href="https://github.com/oslabs-beta/StashQL"><img src="https://img.shields.io/badge/license-MIT-blue"/></a>
 	<br>
 </p>
 
