@@ -96,8 +96,11 @@ stashql clear logs
 ```
 
 
-## <a name="team "/> The Team 
-Simon Chen    | [GitHub](https://github.com/simonchn160) | [LinkedIn](https://www.linkedin.com/in/simonchen7/)
+## <a name="team "/> The Team
 Hakudo Ueno | [GitHub](https://github.com/HakudoUeno) | [LinkedIn](https://www.linkedin.com/in/hakudo-ueno/)
+<br>
+Simon Chen    | [GitHub](https://github.com/simonchn160) | [LinkedIn](https://www.linkedin.com/in/simonchen7/)
+<br>
 Ian Madden    | [GitHub](https://github.com/ifmadden) | [LinkedIn](https://www.linkedin.com/in/ian-madden/)
+<br>
 Louie Mendez | [GitHub](https://github.com/LouieMjr) | [LinkedIn](https://www.linkedin.com/in/louie-mendez/)
