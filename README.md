@@ -1,5 +1,5 @@
 <p align="center">
-	<img src=''>
+	<img src='./stashQl-demo/client/logo1.jpg/'>
   <a href="https://github.com/oslabs-beta/StashQL"><img src="https://img.shields.io/badge/license-MIT-blue"/></a>
 	<br>
 </p>
