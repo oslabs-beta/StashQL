@@ -112,7 +112,7 @@ class stashql {
                         const colonIdx = therefillCacheArg.indexOf(":");
                         const theField = therefillCacheArg.slice(colonIdx + 1);
                         const quoteIdx = theField.indexOf('"');
-                        const theRealField = theField.slice(quoteIdx + 1);
+                        const theRealField = theField.slice(quoteIdx + 1, theField.length - 1);
                         yield this.refillCacheHandler(theRealField);
                     }
                     else if (query.includes("clearRelatedFields")) {
@@ -122,6 +122,7 @@ class stashql {
                         const colonIdx = theClearRelatedFieldsArg.indexOf(":");
                         const theField = theClearRelatedFieldsArg.slice(colonIdx + 1);
                         const quoteIdx = theField.indexOf('"');
+                        console.log(theField, "THE FIELD");
                         const theRealField = theField.slice(quoteIdx + 1);
                         yield this.clearRelatedFieldsHandler(theRealField);
                     }
@@ -156,7 +157,16 @@ class stashql {
             for (let queryKey of queryKeys) {
                 const secondCurly = queryKey.indexOf("{", 1);
                 const currQueryField = queryKey.slice(1, secondCurly).trim();
-                if (currQueryField === field) {
+                let queryKeyCopy = queryKey.replace(/(\r\n|\n|\r)/gm, "");
+                queryKeyCopy = queryKeyCopy.replace(/\s/g, '');
+                let queryFieldsArr = queryKeyCopy.match(/.+?(?<=\{)|(.+?(?<=\())/gm).filter(Boolean);
+                queryFieldsArr.forEach((query, i) => {
+                    queryFieldsArr[i] = query.replace('{', "");
+                    queryFieldsArr[i] = queryFieldsArr[i].replace(/ *\([^)]*\) */g, "");
+                });
+                if (queryFieldsArr.includes(field)) {
+                    console.log("IN THE REFILLCACHE");
+                    console.log(queryKey);
                     yield (0, graphql_1.graphql)({ schema: this.schema, source: queryKey })
                         .then((data) => JSON.stringify(data))
                         .then((data) => {

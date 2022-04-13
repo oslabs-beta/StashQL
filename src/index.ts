@@ -144,7 +144,7 @@ class stashql {
           const colonIdx: number = therefillCacheArg.indexOf(":");
           const theField: string = therefillCacheArg.slice(colonIdx + 1);
           const quoteIdx: number = theField.indexOf('"');
-          const theRealField: string = theField.slice(quoteIdx + 1);
+          const theRealField: string = theField.slice(quoteIdx + 1, theField.length - 1);
           //we then call refillCacheHandler and pass in the field
           await this.refillCacheHandler(theRealField);
         } else if (query.includes("clearRelatedFields")) {
@@ -157,6 +157,7 @@ class stashql {
           const colonIdx: number = theClearRelatedFieldsArg.indexOf(":");
           const theField: string = theClearRelatedFieldsArg.slice(colonIdx + 1);
           const quoteIdx: number = theField.indexOf('"');
+          console.log(theField, "THE FIELD");
           const theRealField: string = theField.slice(quoteIdx + 1);
           await this.clearRelatedFieldsHandler(theRealField);
         }
@@ -202,7 +203,21 @@ class stashql {
       const currQueryField: string = queryKey.slice(1, secondCurly).trim();
       //for each query key, we check to see if the field in that query matches the field passed in
       //if so, that means we want to re-run that query, therefore updating its value in the cache
-      if (currQueryField === field) {
+
+      //Below regex removes linebreaks and spaces, also extra replace to strip quotes from field
+      let queryKeyCopy : string = queryKey.replace(/(\r\n|\n|\r)/gm, "");
+      queryKeyCopy = queryKeyCopy.replace(/\s/g, '');
+
+      //Below regex abstracts words to left of '{' and creates an array. Filters out null values to satisfy Typescript
+      let queryFieldsArr : string[] = queryKeyCopy.match(/.+?(?<=\{)|(.+?(?<=\())/gm)!.filter(Boolean);
+      queryFieldsArr.forEach((query,i) => {
+        queryFieldsArr[i] = query.replace('{', "");
+        queryFieldsArr[i] = queryFieldsArr[i].replace(/ *\([^)]*\) */g, "");
+      });
+
+      if (queryFieldsArr.includes(field)) {
+        console.log("IN THE REFILLCACHE")
+        console.log(queryKey)
         await graphql({ schema: this.schema, source: queryKey })
           .then((data: ExecutionResult<any>) => JSON.stringify(data))
           .then((data: string) => {
