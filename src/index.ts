@@ -16,9 +16,7 @@ class stashql {
     clientSchema: GraphQLSchema,
     redisCache: RedisClientType,
     life: number
-  
   ) {
-    
     this.queryHandler = this.queryHandler.bind(this);
     this.refillCacheHandler = this.refillCacheHandler.bind(this);
     this.clearRelatedFieldsHandler = this.clearRelatedFieldsHandler.bind(this);
@@ -53,13 +51,16 @@ class stashql {
       try {
         //if that query exists in our cache
         if (await this.cache.exists(this.query)) {
-          console.log("cache hit!");
+          //Uncomment to check if cache was hit
+          // console.log("cache hit!");
           //we get the corresponding data and send it back
-          const data: string = await this.cache.get(this.query) || "";
+          const data: string = (await this.cache.get(this.query)) || "";
           res.locals.data = JSON.parse(data);
           this.endTime = performance.now();
           res.locals.runTime = this.endTime - this.startTime;
-          console.log("performance: ", this.endTime - this.startTime);
+
+          //Uncomment to check performance metrics
+          // console.log("performance: ", this.endTime - this.startTime);
           try {
             fs.appendFileSync(
               path.join(process.cwd(), "/logs/logs.txt"),
@@ -77,7 +78,8 @@ class stashql {
           return next();
           //if the query does not exists in our cache
         } else {
-          console.log("database hit!");
+          //Uncomment to test if database hit
+          // console.log("database hit!");
           //we run the query
           await graphql({ schema: this.schema, source: this.query })
             .then((data: ExecutionResult<any>) => JSON.stringify(data))
@@ -92,7 +94,8 @@ class stashql {
               res.locals.data = JSON.parse(data);
               this.endTime = performance.now();
               res.locals.runTime = this.endTime - this.startTime;
-              console.log("performance: ", this.endTime - this.startTime);
+              // Uncomment for performance metrics
+              // console.log("performance: ", this.endTime - this.startTime);
               try {
                 fs.appendFileSync(
                   path.join(process.cwd(), "/logs/logs.txt"),
@@ -144,7 +147,10 @@ class stashql {
           const colonIdx: number = therefillCacheArg.indexOf(":");
           const theField: string = therefillCacheArg.slice(colonIdx + 1);
           const quoteIdx: number = theField.indexOf('"');
-          const theRealField: string = theField.slice(quoteIdx + 1, theField.length - 1);
+          const theRealField: string = theField.slice(
+            quoteIdx + 1,
+            theField.length - 1
+          );
           //we then call refillCacheHandler and pass in the field
           await this.refillCacheHandler(theRealField);
         } else if (query.includes("clearRelatedFields")) {
@@ -157,14 +163,14 @@ class stashql {
           const colonIdx: number = theClearRelatedFieldsArg.indexOf(":");
           const theField: string = theClearRelatedFieldsArg.slice(colonIdx + 1);
           const quoteIdx: number = theField.indexOf('"');
-          console.log(theField, "THE FIELD");
           const theRealField: string = theField.slice(quoteIdx + 1);
           await this.clearRelatedFieldsHandler(theRealField);
         }
         res.locals.data = JSON.parse(data);
         this.endTime = performance.now();
         res.locals.runTime = this.endTime - this.startTime;
-        console.log("performance: ", this.endTime - this.startTime);
+        // Uncomment to check performance metrics
+        // console.log("performance: ", this.endTime - this.startTime);
         try {
           fs.appendFileSync(
             path.join(process.cwd(), "/logs/logs.txt"),
@@ -205,19 +211,19 @@ class stashql {
       //if so, that means we want to re-run that query, therefore updating its value in the cache
 
       //Below regex removes linebreaks and spaces, also extra replace to strip quotes from field
-      let queryKeyCopy : string = queryKey.replace(/(\r\n|\n|\r)/gm, "");
-      queryKeyCopy = queryKeyCopy.replace(/\s/g, '');
+      let queryKeyCopy: string = queryKey.replace(/(\r\n|\n|\r)/gm, "");
+      queryKeyCopy = queryKeyCopy.replace(/\s/g, "");
 
       //Below regex abstracts words to left of '{' and creates an array. Filters out null values to satisfy Typescript
-      let queryFieldsArr : string[] = queryKeyCopy.match(/.+?(?<=\{)|(.+?(?<=\())/gm)!.filter(Boolean);
-      queryFieldsArr.forEach((query,i) => {
-        queryFieldsArr[i] = query.replace('{', "");
+      let queryFieldsArr: string[] = queryKeyCopy
+        .match(/.+?(?<=\{)|(.+?(?<=\())/gm)!
+        .filter(Boolean);
+      queryFieldsArr.forEach((query, i) => {
+        queryFieldsArr[i] = query.replace("{", "");
         queryFieldsArr[i] = queryFieldsArr[i].replace(/ *\([^)]*\) */g, "");
       });
 
       if (queryFieldsArr.includes(field)) {
-        console.log("IN THE REFILLCACHE")
-        console.log(queryKey)
         await graphql({ schema: this.schema, source: queryKey })
           .then((data: ExecutionResult<any>) => JSON.stringify(data))
           .then((data: string) => {
@@ -238,11 +244,23 @@ class stashql {
   // you run a query, it will simply re-run ONLY that query, NOT ALL queries that matches the field.
   async clearRelatedFieldsHandler(field: string) {
     const queryKeys: string[] = await this.cache.keys("*");
-
     for (let queryKey of queryKeys) {
       const secondCurly: number = queryKey.indexOf("{", 1);
       const currQueryField: string = queryKey.slice(1, secondCurly).trim();
-      if (currQueryField === field) {
+
+      //Below regex removes linebreaks and spaces, also extra replace to strip quotes from field
+      let queryKeyCopy: string = queryKey.replace(/(\r\n|\n|\r)/gm, "");
+      queryKeyCopy = queryKeyCopy.replace(/\s/g, "");
+
+      //Below regex abstracts words to left of '{' and creates an array. Filters out null values to satisfy Typescript
+      let queryFieldsArr: string[] = queryKeyCopy
+        .match(/.+?(?<=\{)|(.+?(?<=\())/gm)!
+        .filter(Boolean);
+      queryFieldsArr.forEach((query, i) => {
+        queryFieldsArr[i] = query.replace("{", "");
+        queryFieldsArr[i] = queryFieldsArr[i].replace(/ *\([^)]*\) */g, "");
+      });
+      if (queryFieldsArr.includes(field)) {
         await this.cache.del(queryKey);
       }
     }
@@ -262,7 +280,6 @@ class stashql {
       return next();
     }
   }
-
 }
 
 module.exports = stashql;

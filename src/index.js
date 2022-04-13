@@ -45,12 +45,10 @@ class stashql {
             if (query.slice(0, 8) !== "mutation") {
                 try {
                     if (yield this.cache.exists(this.query)) {
-                        console.log("cache hit!");
                         const data = (yield this.cache.get(this.query)) || "";
                         res.locals.data = JSON.parse(data);
                         this.endTime = performance.now();
                         res.locals.runTime = this.endTime - this.startTime;
-                        console.log("performance: ", this.endTime - this.startTime);
                         try {
                             fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
                                 type: "cache",
@@ -66,7 +64,6 @@ class stashql {
                         return next();
                     }
                     else {
-                        console.log("database hit!");
                         yield (0, graphql_1.graphql)({ schema: this.schema, source: this.query })
                             .then((data) => JSON.stringify(data))
                             .then((data) => {
@@ -77,7 +74,6 @@ class stashql {
                             res.locals.data = JSON.parse(data);
                             this.endTime = performance.now();
                             res.locals.runTime = this.endTime - this.startTime;
-                            console.log("performance: ", this.endTime - this.startTime);
                             try {
                                 fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
                                     type: "query",
@@ -122,14 +118,12 @@ class stashql {
                         const colonIdx = theClearRelatedFieldsArg.indexOf(":");
                         const theField = theClearRelatedFieldsArg.slice(colonIdx + 1);
                         const quoteIdx = theField.indexOf('"');
-                        console.log(theField, "THE FIELD");
                         const theRealField = theField.slice(quoteIdx + 1);
                         yield this.clearRelatedFieldsHandler(theRealField);
                     }
                     res.locals.data = JSON.parse(data);
                     this.endTime = performance.now();
                     res.locals.runTime = this.endTime - this.startTime;
-                    console.log("performance: ", this.endTime - this.startTime);
                     try {
                         fs_1.default.appendFileSync(path_1.default.join(process.cwd(), "/logs/logs.txt"), `${JSON.stringify({
                             type: "mutation",
@@ -158,15 +152,15 @@ class stashql {
                 const secondCurly = queryKey.indexOf("{", 1);
                 const currQueryField = queryKey.slice(1, secondCurly).trim();
                 let queryKeyCopy = queryKey.replace(/(\r\n|\n|\r)/gm, "");
-                queryKeyCopy = queryKeyCopy.replace(/\s/g, '');
-                let queryFieldsArr = queryKeyCopy.match(/.+?(?<=\{)|(.+?(?<=\())/gm).filter(Boolean);
+                queryKeyCopy = queryKeyCopy.replace(/\s/g, "");
+                let queryFieldsArr = queryKeyCopy
+                    .match(/.+?(?<=\{)|(.+?(?<=\())/gm)
+                    .filter(Boolean);
                 queryFieldsArr.forEach((query, i) => {
-                    queryFieldsArr[i] = query.replace('{', "");
+                    queryFieldsArr[i] = query.replace("{", "");
                     queryFieldsArr[i] = queryFieldsArr[i].replace(/ *\([^)]*\) */g, "");
                 });
                 if (queryFieldsArr.includes(field)) {
-                    console.log("IN THE REFILLCACHE");
-                    console.log(queryKey);
                     yield (0, graphql_1.graphql)({ schema: this.schema, source: queryKey })
                         .then((data) => JSON.stringify(data))
                         .then((data) => {
@@ -188,7 +182,16 @@ class stashql {
             for (let queryKey of queryKeys) {
                 const secondCurly = queryKey.indexOf("{", 1);
                 const currQueryField = queryKey.slice(1, secondCurly).trim();
-                if (currQueryField === field) {
+                let queryKeyCopy = queryKey.replace(/(\r\n|\n|\r)/gm, "");
+                queryKeyCopy = queryKeyCopy.replace(/\s/g, "");
+                let queryFieldsArr = queryKeyCopy
+                    .match(/.+?(?<=\{)|(.+?(?<=\())/gm)
+                    .filter(Boolean);
+                queryFieldsArr.forEach((query, i) => {
+                    queryFieldsArr[i] = query.replace("{", "");
+                    queryFieldsArr[i] = queryFieldsArr[i].replace(/ *\([^)]*\) */g, "");
+                });
+                if (queryFieldsArr.includes(field)) {
                     yield this.cache.del(queryKey);
                 }
             }
