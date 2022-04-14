@@ -1,0 +1,4 @@
+logs/**
+node_modules/**
+coverage/**
+misc/pgenv.js
