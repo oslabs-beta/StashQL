@@ -1,9 +1,6 @@
 const { Pool } = require('pg');
-//IF NOT IMPORTING PG_URI FROM A SEPARATE FILE, REMOVE THE BELOW LINE
-// const import_PG_URI = require('./pgenv')
+//ADD YOUR .ENV FILE INTO THE 'tests' FOLDER DIRECTORY
 require('dotenv').config();
-
-// UPDATE YOUR CREATED 'pgenv.js' FILE WITH YOUR PG_URI FOR TESTING PURPOSES, OR PUT IN YOUR PG_URI STRING
 // const PG_URI = import_PG_URI.PG_URI;
 // create a new pool here using the connection string above
 const pool = new Pool({

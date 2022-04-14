@@ -1,5 +1,7 @@
 const express = require('express');
+// DO NOT UPGRADE 'node-fetch' PAST VERSION 3.0 OR YOU WILL EXPERIENCE ISSUES ATTEMPTING TO TEST
 const fetch = require('node-fetch');
+// DO NOT UPGRADE 'node-fetch' PAST VERSION 3.0 OR YOU WILL EXPERIENCE ISSUES ATTEMPTING TO TEST
 const cors = require('cors');
 const redis = require('redis');
 const fs = require('fs');
