@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 const Subscribe = (props) => {
   return (
     <div id='subscribeModal'>
-      <h4 id="sub-h4">Stay updated</h4>
-      <h6 id="sub-h6">Subscribe for the latest StashQL news and updates!</h6>
+      <h2 id="sub-h4">Stay updated</h2>
+      <h4 id="sub-h6">Subscribe for the latest StashQL news and updates!</h4>
       <div id='inputBtn'>
         <input
           onChange={(e) => {props.updateEmail(e.target.value); props.updateDisplayText()}}
