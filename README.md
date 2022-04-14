@@ -12,7 +12,7 @@
 - [Getting Started](#implementation)
 	- [Queries](#queries)
 	- [Mutations](#mutations)
-		- [refillCach](#refillCache)
+		- [refillCache](#refillCache)
 		- [clearRelatedFields](#clearRelatedFields)
 - [Logging](#logging)
 - [The Team ](#team )
