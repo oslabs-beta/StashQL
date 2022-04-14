@@ -1,6 +1,9 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const cors = require('cors');
+// DO NOT UPGRADE TO NODE-FETCH VERSION 3.0 OR IT WILL BREAK THE TEST
+// Alternatively, you can attempt the following if requiring node version 3+, but it has not been confirmed to work for the tests
+// const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = require("node-fetch");
 const redis = require('redis');
 const fs = require('fs');
 const path = require('path');
