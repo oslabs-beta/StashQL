@@ -12,7 +12,7 @@
 - [Getting Started](#implementation)
 	- [Queries](#queries)
 	- [Mutations](#mutations)
-		- [refillCach](#refillCach)
+		- [refillCach](#refillCache)
 		- [clearRelatedFields](#clearRelatedFields)
 - [Logging](#logging)
 - [The Team ](#team )
@@ -51,7 +51,7 @@ When sending any GraphQL queries or mutations, you can use StashQL’s queryHand
 ### <a name="mutations"/> Mutations
 StashQL provides two methods to update your cache so that you never have to worry about stale data being returned from your queries: the refillCache() method and the clearRelatedFields() method. Both of these methods can be passed in as optional arguments for your mutation types.
 
-#### <a name="refillCach"/> refillCach
+#### <a name="refillCache"/> refillCache
 The refillCache argument will take in a string value, which will be any field you want to update after running a mutation. The queryHandler() method will see this argument, take its string value, and update any cached data relevant to the passed-in string value by re-running their corresponding queries to get the most up-to-date information from the database.
 ```
 mutation{ 
