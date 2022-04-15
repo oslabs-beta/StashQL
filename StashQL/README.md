@@ -1,5 +1,5 @@
 <p align="center">
-	<img src='../stashQL-demo/client/images/logo1.jpg/' alt="logo" width="300">
+	<img src='http://stashql.com/build/dcf03587fc668f11747365d29bb29d73.png' alt="logo" width="300">
 	<br>
   	<a href="https://github.com/oslabs-beta/StashQL"><img src="https://img.shields.io/badge/license-MIT-blue"/></a>
 	<br>

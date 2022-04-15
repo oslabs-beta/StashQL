@@ -1,0 +1,31 @@
+{
+    "name": "stashql",
+    "version": "1.0.8",
+    "description": "A nimble, lightweight solution to GraphQL's caching issues",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/oslabs-beta/StashQL.git"
+    },
+    "keywords": [
+        "graphql",
+        "caching",
+        "cache",
+        "stashql"
+    ],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/oslabs-beta/StashQL.git/issues"
+    },
+    "homepage": "http://www.stashql.com",
+    "dependencies": {
+      "express": "^4.17.3",
+      "express-graphql": "^0.12.0",
+      "graphql": "^15.3.0",
+      "redis": "^4.0.4"
+    }
+  }
